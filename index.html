@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeFlow</title>
+    <link rel="icon" type="image/x-icon" href="./assets/logo/logo.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="lib/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .hospital-gallery {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        .hospital-scroll-container {
+        display: flex;
+        animation: scroll-horizontal 50s linear infinite;
+        width: calc(400% + 10px); 
+        gap: 10px;
+        }
+
+        .hospital-scroll-container img {
+        flex-shrink: 0;
+        height: auto;
+        max-height: 120px;
+        width: auto;
+        object-fit: contain;
+        filter: grayscale(20%) opacity(0.9);
+        transition: all 0.3s ease;
+        }
+
+        .hospital-scroll-container img:hover {
+        filter: grayscale(0%) opacity(1);
+        transform: scale(1.05);
+        }
+
+        @keyframes scroll-horizontal {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-75%);
+        }
+        }
+
+        @media (max-width: 768px) {
+        .hospital-scroll-container img {
+            max-height: 80px;
+        }
+        
+        .hospital-scroll-container {
+            animation-duration: 15s; /* Faster on mobile */
+            gap: 15px;
+        }
+        }
+
+        @media (max-width: 480px) {
+        .hospital-scroll-container img {
+            max-height: 60px;
+        }
+        
+        .hospital-scroll-container {
+            gap: 10px;
+        }
+        }
+
+        @media (max-width: 320px) {
+        .hospital-scroll-container img {
+            max-height: 50px;
+        }
+        }
+
+        .hospital-gallery:hover .hospital-scroll-container {
+        animation-play-state: paused;
+        }
+
+        #modal-overlay {
+            scroll-behavior: smooth;
+        }
+
+        #form::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #form::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        #form::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        #form::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        #form input, #form select, #form button {
+            transition: all 0.2s ease-in-out;
+        }
+
+        #form input:focus, #form select:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
+        .carousel-container {
+            overflow: hidden;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+        .carousel-slide {
+            width: 200px;
+            flex-shrink: 0;
+            padding: 0 8px;
+
+        }
+
+    </style>
+</head>
+<body>
+    <!-- navigation bar -->
+    <div class="bg-gradient-to-r from-[#1D3557] to-[#802027] relative">
+        <nav class="bg-[#1D3557] w-5/6 rounded-lg outline-white outline-1 outline absolute top-[35px] left-[100px]">
+            <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
+                <div class="relative flex h-16 items-center justify-between">
+                    <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
+                        <!-- Mobile menu button-->
+                        <button type="button" id="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false" class="relative inline-flex items-center justify-end rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
+                            <span class="absolute -inset-0.5"></span>
+                            <!-- Hamburger icon -->
+                            <svg id="hamburger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="block size-6">
+                                <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <!-- Close icon -->
+                            <svg id="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="hidden size-6">
+                                <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between w-full">     
+                        <div class="flex items-center">
+                            <div class="flex shrink-0 items-center">
+                                <img src="./assets/logo/logo.svg" alt="" class="h-8 w-auto"/>
+                            </div>
+                            <!-- Desktop menu -->
+                            <div class="hidden sm:ml-6 sm:block">
+                                <div class="flex space-x-4 items-center">
+                                    <a href="#" class="text-lg font-light text-white hover:text-[#E63946]">How it works</a>
+                                    <a href="#" class="text-lg font-light text-white hover:text-[#E63946] ">Contact</a>
+                                    <a href="#" class="text-lg font-light text-gray-300 hover:text-[#E63946]">FAQ</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-[40px] hidden sm:ml-6 sm:block">
+                            <a href="#" class="text-lg font-light text-white hover:text-[#E63946]">Sign Up</a>
+                            <a href="#" onclick="openForm()">
+                                <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-1 px-4 rounded-md ml-10">Donate Now</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu -->
+                <div id="mobile-menu" class="hidden sm:hidden">
+                    <div class="space-y-1 px-2 pb-3 pt-2">
+                        <a href="#" aria-current="page" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white">How it works</a>
+                        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact</a>
+                        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">FAQ</a>
+
+                        <div class="flex items-center gap-[50px]">
+                            <a href="#" class="text-lg font-light text-white hover:text-[#E63946]">Sign Up</a>
+                            <a href="#" onclick="openForm()">
+                                <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-1 px-4 rounded-md ">Donate Now</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- hero-section -->
+        <div class="flex flex-col lg:flex-row justify-between items-center min-h-screen px-4 lg:px-0">            
+            <div class="pt-16 md:pt-32 lg:pt-4 p-4 md:p-8 lg:p-12 w-full lg:w-auto order-2 lg:order-1">                
+                <div>                    
+                    <h1 class="pb-8 md:pb-6 text-white text-2xl md:text-5xl lg:text-3xl xl:text-6xl font-medium whitespace-nowrap">Your Flow,Their Hope</h1>                    
+                    <p class=" pt-4 text-white text-base md:text-lg lg:text-xl leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">
+                        Every drop of blood you give brings someone closer to <br> life, healing, and hope. LifeFlow bridges the gap between <br> willing donors and those in urgent need.<br>
+                        Find nearby hospitals in need and donate on your <br> schedule.
+                    </p>                
+                </div>                
+                <div class="mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-[45px] flex flex-col sm:flex-row">                    
+                    <a href="#" onclick="openForm()">                        
+                        <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 md:p-2 px-6 md:px-6 rounded-md transition-colors duration-200">Donate Now</button>                    
+                    </a>                    
+                    <a href="#" class="w-full sm:w-auto">                        
+                        <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white p-3 md:p-2 px-8 md:px-12 rounded-lg outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
+                    </a>                
+                </div>                
+                <div class="mt-6 md:mt-8 text-white text-sm md:text-base">                    
+                    <p class="leading-relaxed">By clicking get started to join or sign in, you agree to LifeFlows<br class="hidden md:block">                    
+                    <span style="color: #009CFF;"><a href="" class="hover:underline">User Agreement </a></span> and <span style="color: #009CFF;"><a href="" class="hover:underline">Privacy Policies.</a></span></p>                
+                </div>            
+            </div>            
+            <div class="w-full lg:w-auto flex justify-center order-1 lg:order-2 mb-18 lg:mb-0 mt-8 md:mt-16 lg:mt-32">                
+                <img src="./assets/images/hero-img.svg" alt="Hero Image" class="max-w-full h-auto bg-contain w-full md:w-3/4 lg:w-full">            
+            </div>        
+        </div>
+    </div>
+
+    <div>
+        <div class="flex justify-center mt-6 text-[#E63946] italic text-2xl font-medium">
+            <h3>Trusted by Hospitals Nationwide</h3>
+        </div>
+
+        <div class="hospital-gallery">
+            <div class="hospital-scroll-container mt-6">
+                <!-- First set of images -->
+                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
+                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+                
+                <!-- Duplicated set for seamless loop -->
+                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
+                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
+                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
+                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
+                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+            </div>
+        </div>
+    </div>
+
+
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">        
+        <!-- Donate Form Container -->        
+        <div id="form" class="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 my-8 relative max-h-[90vh] overflow-y-auto">
+            <!-- Sticky Header -->
+            <div class="sticky top-0 bg-white rounded-t-lg p-6 pb-4 border-b border-gray-100 z-10">
+                <button onclick="closeForm()" class="absolute top-4 right-4 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-400 transition-colors">                
+                    <span class="text-lg font-bold">×</span>            
+                </button>                               
+                <div class="pr-8">                
+                    <h1 class="text-red-500 text-xl font-bold mb-2 text-center">Become a Donor. Save a Life.</h1>                
+                    <p class="text-gray-600 text-sm text-center">Complete the form below and get matched with hospitals <br> near you.</p>            
+                </div>
+            </div>
+            
+            <!-- Scrollable Content -->
+            <div class="p-6 pt-4">                                 
+                <form class="space-y-4">                
+                    <div>                    
+                        <div class="text-gray-600 text-sm mb-2">Full Name <span class="text-red-500">*</span></div>                    
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                    </div>                                                 
+                    <div>                    
+                        <div class="text-gray-600 text-sm mb-2">Phone Number <span class="text-red-500">*</span></div>                    
+                        <input type="tel" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                    </div>                                             
+                    <div>                    
+                        <div class="text-gray-600 text-sm mb-2">Email Address <span class="text-red-500">*</span></div>                    
+                        <input type="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                    </div>                                           
+                    <div>                    
+                        <div class="text-gray-600 text-sm mb-2">Blood Group <span class="text-red-500">*</span></div>                    
+                        <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">
+                            <option value="">Select</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>                
+                    </div>                                           
+                    <div>                    
+                        <div class="text-gray-600 text-sm mb-2">Location / Address</div>                    
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                    </div>                                           
+                    <div>                    
+                        <div class="text-gray-600 text-sm mb-2">Nearest Landmark</div>                    
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                    </div>                                           
+                    <div class="pt-2">                    
+                        <div class="text-gray-600 text-sm mb-3">Gender</div>                    
+                        <div class="flex flex-row gap-2">                        
+                            <label class="flex items-center cursor-pointer">                            
+                                <input type="radio" name="gender" value="male" class="mr-3 text-red-500 focus:ring-red-500">                            
+                                <span class="text-gray-600 text-sm">Male</span>                        
+                            </label>                        
+                            <label class="flex items-center cursor-pointer">                            
+                                <input type="radio" name="gender" value="female" class="mr-3 text-red-500 focus:ring-red-500" checked>                            
+                                <span class="text-gray-600 text-sm">Female</span>                        
+                            </label>                        
+                            <label class="flex items-center cursor-pointer">                            
+                                <input type="radio" name="gender" value="prefer-not-to-say" class="mr-3 text-red-500 focus:ring-red-500">                            
+                                <span class="text-gray-600 text-sm">Prefer not to say</span>                        
+                            </label>                    
+                        </div>                
+                    </div>                                           
+                    <button type="button" onclick="findHospitals()" class="w-full bg-red-500 text-white text-lg py-3 rounded font-bold hover:bg-red-600 transition-colors mt-6">                    
+                        Find Hospitals Near Me                
+                    </button>                                           
+                    <p class="text-gray-500 text-md text-center mt-4 leading-relaxed">                    
+                        Your information is safe with us. It's only shared with verified hospitals when a match is made.                
+                    </p>            
+                </form>
+            </div>        
+        </div>    
+    </div>
+
+    <div class="bg-[#1D3557] mt-8">
+        <div class="text-white p-16">
+            <h2 class="pb-6 md:pb-6 text-xl md:text-2xl lg:text-2xl xl:text-4xl font-medium whitespace-nowrap">Be a Lifeline in 3 Simple Steps</h2>
+            <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">Every two seconds, someone in need requires blood. Your decision to donate could be the difference between life  and loss. Whether it's a mother in surgery, a child with anemia, or an accident victim you can be their lifeline.
+            Join a community of life-savers and make a lasting impact on your time, and in your city.</p>
+            <a href="#" onclick="openForm()">
+                <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md items-center mt-8">Donate Now</button>
+            </a>
+        </div>
+
+        <div class="relative pb-32">
+            <img class="mx-[140px] w-2/3 items-center flex" src="./assets/images/Line 1.svg" alt="">
+            <div class="absolute top-[87px] left-[87px]">
+                <img class="w-[220px]" src="./assets/images/donate-bg.svg" alt="">
+                <img class="absolute w-[200px] top-[80px] left-[20px]" src="./assets/images/contactUsBtn.svg" alt="">
+                <h6 class="absolute top-[220px] left-[3px] text-white text-xl font-medium italic">Step 1: Click Donate</h6>
+                <p class="absolute top-[240px] left-[3px] text-white font-light">No sign-up needed</p>
+            </div>
+            <div class="absolute top-[3px] right-[550px]">
+                <img class="w-[220px]" src="./assets/images/donate-bg.svg" alt="">
+                <img class="absolute w-[170px] top-[25px] right-[25px]" src="./assets/images/donate-2.svg" alt="">
+                <h6 class="absolute top-[220px] left-[3px] text-white text-xl font-medium italic">Step 2: Fill Your Info</h6>
+                <p class="absolute top-[240px] left-[3px] text-white font-light">We match you to nearby hospitals</p>
+            </div>
+
+            <div class="absolute top-[-80px] right-[90px]">
+                <img class="w-[220px]" src="./assets/images/donate-bg.svg" alt="">
+                <img class="absolute w-[190px] right-[17px] top-[40px]" src="./assets/images/donate-3.svg" alt="">
+                <h6 class="absolute top-[220px] left-[3px] text-white text-xl font-medium italic">Step 3: Pick a Date & Donate</h6>
+                <p class="absolute top-[240px] left-[3px] text-white font-light">Choose a time that works for you and show up to donate.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen px-4 ">
+        <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-8 pt-24 md:pt-32 lg:pt-4">
+            <div class="flex-shrink-0  -ml-8">
+                <img class="w-48 md:w-64 lg:w-3/5" src="./assets/images/Mask group.svg" alt="">
+            </div>
+        
+            <div class="flex-shrink-0 -ml-2 md:-ml-3 lg:-ml-80 mb-20">
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center md:text-left whitespace-nowrap text-[#E63946] mb-4">For Hospitals</h2>
+                <h6 class="italic font-medium">Need Blood? We’ve Got You Covered</h6>
+                <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose mt-4">LifeFlow connects your hospital to a growing network of voluntary blood donors. Whether you're managing a blood bank or facing an urgent shortage, our platform helps you find compatible donors quickly and efficiently.
+                Sign up to register your hospital, post blood requests, and get matched with ready donors based on location, blood type, and availability.
+                It’s fast, secure, and built with your patients in mind.</p>
+                <a href="#">
+                  <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 px-10 rounded-md items-center mt-8">Sign Up</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-[#1D3557] pt-24 relative h-[480px]">
+        <div>
+            <h2 class="flex justify-center text-white text-4xl font-medium">Real People. Real Impact.</h2>
+            <p class="flex justify-center text-white leading-relaxed italic mt-4">See how LifeFlow is making a difference, one donor and one hospital at a time.</p>
+        </div>
+
+        <div class="relative bg-white w-full max-w-7xl mx-auto h-[250px] rounded-lg shadow-lg">
+        <!-- Navigation Arrows -->
+        <button id="prevBtn" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center z-10 transition-colors">
+            <span class="text-lg font-bold">&lt;</span>
+        </button>
+            
+        <button id="nextBtn" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center z-10 transition-colors">
+           <span class="text-lg font-bold">&gt;</span>
+        </button>
+
+        <!-- Carousel Container -->
+        <div class="carousel-container h-full px-6 mt-10 pb-8">
+            <div id="carouselTrack" class="carousel-track h-full items-center pt-8">
+                <!-- Card 1 -->
+                <div class="carousel-slide">
+                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col ">
+                        <div class="flex justify-center mb-2">
+                            <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                        </div>
+                        <p class="text-[10px] leading-tight text-white text-center flex-grow">"Before LifeFlow, matching blood donors to our patients was stressful. Now we can post a request and get matched within hours. It's been a game-changer for our emergency team."</p>
+                        <p class="text-[10px] text-white text-center mt-2">
+                            <strong>Dr. Nnenna O.</strong><br>
+                            <span class="text-[9px]">Medical Director, Gracefield Hospital</span>
+                        </p>
+                    </div>
+                </div>
+
+                    <!-- Card 2 -->
+                <div class="carousel-slide">
+                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-12">
+                        <div class="flex justify-center mb-2">
+                            <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                        </div>
+                        <p class="text-[10px] leading-tight text-white text-center flex-grow">"I've always wanted to donate blood, but I didn't know where to start. LifeFlow made it so easy. I just filled a form, picked a hospital, and got a thank-you text after donating."</p>
+                        <p class="text-[10px] text-white text-center mt-2">
+                            <strong>Ayo F.</strong><br>
+                            <span class="text-[9px]">First-Time Donor</span>
+                        </p>
+                    </div>
+                </div>
+
+                    <!-- Card 3 -->
+                <div class="carousel-slide">
+                    <div class="bg-[#1D3557] w-[200px] h-[150px] rounded-lg p-3 flex flex-col mt-4 mx-24">
+                        <div class="flex justify-center mb-2">
+                            <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                        </div>
+                        <p class="text-[10px] leading-tight text-white text-center flex-grow">"Donating through LifeFlow gives me purpose. I can schedule donations around my time, and knowing I helped someone is the best reward."</p>
+                        <p class="text-[10px] text-white text-center mt-2">
+                            <strong>Chinedu A.</strong><br>
+                            <span class="text-[9px]">Voluntary Donor</span>
+                        </p>
+                    </div>
+                </div>
+
+                    <!-- Card 4 -->
+                <div class="carousel-slide">
+                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-36">
+                        <div class="flex justify-center mb-2">
+                            <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                        </div>
+                        <p class="text-[10px] leading-tight text-white text-center flex-grow">"I was nervous at first, but LifeFlow made everything clear and easy. It felt amazing knowing my small act could save someone's life. I'll definitely donate again."</p>
+                        <p class="text-[10px] text-white text-center mt-2">
+                            <strong>Zainab K.</strong><br>
+                            <span class="text-[9px]">Student & Donor</span>
+                        </p>
+                    </div>
+                </div>
+
+                    <!-- Card 5 (New) -->
+                <div class="carousel-slide">
+                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-48">
+                       <div class="flex justify-center mb-2">
+                            <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                        </div>
+                            <p class="text-[10px] leading-tight text-white text-center flex-grow">"LifeFlow connected me with donors when we desperately needed O-negative blood for a critical surgery. The platform's efficiency literally helped save a life."</p>
+                            <p class="text-[10px] text-white text-center mt-2">
+                                <strong>Dr. Ibrahim M.</strong><br>
+                                <span class="text-[9px]">Chief Surgeon, Lagos General Hospital</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 (New) -->
+                    <div class="carousel-slide">
+                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-60">
+                            <div class="flex justify-center mb-2">
+                                <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                            </div>
+                            <p class="text-[10px] leading-tight text-white text-center flex-grow">"As a regular donor, LifeFlow keeps track of my donation history and reminds me when I'm eligible again. It's like having a personal donation assistant."</p>
+                            <p class="text-[10px] text-white text-center mt-2">
+                                <strong>Fatima S.</strong><br>
+                                <span class="text-[9px]">Regular Donor</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 7 (New) -->
+                    <div class="carousel-slide">
+                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[20px]">
+                            <div class="flex justify-center mb-2">
+                                <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                            </div>
+                            <p class="text-[10px] leading-tight text-white text-center flex-grow">"The transparency in LifeFlow is amazing. I can see exactly where my blood went and how it helped. It makes every donation feel meaningful and impactful."</p>
+                            <p class="text-[10px] text-white text-center mt-2">
+                                <strong>Emeka O.</strong><br>
+                                <span class="text-[9px]">Community Volunteer</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 8 (New) -->
+                    <div class="carousel-slide">
+                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[55px]">
+                            <div class="flex justify-center mb-2">
+                                <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
+                            </div>
+                            <p class="text-[10px] leading-tight text-white text-center flex-grow">"LifeFlow made organizing our hospital's blood drive so much easier. We reached more donors than ever before and built lasting relationships with our community."</p>
+                            <p class="text-[10px] text-white text-center mt-2">
+                                <strong>Nurse Ada C.</strong><br>
+                                <span class="text-[9px]">Blood Bank Coordinator</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dots Indicator -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                <div class="dot w-2 h-2 rounded-full bg-red-500 cursor-pointer" data-slide="0"></div>
+                <div class="dot w-2 h-2 rounded-full bg-gray-300 cursor-pointer" data-slide="1"></div>
+                <div class="dot w-2 h-2 rounded-full bg-gray-300 cursor-pointer" data-slide="2"></div>
+                <div class="dot w-2 h-2 rounded-full bg-gray-300 cursor-pointer" data-slide="3"></div>
+                <div class="dot w-2 h-2 rounded-full bg-gray-300 cursor-pointer" data-slide="4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row justify-between items-center min-h-screen px-4 lg:px-0">            
+        <div class="pt-16 md:pt-32 lg:pt-4 p-4 md:p-8 lg:p-20 w-full lg:w-auto order-2 lg:order-1 mb-44">                
+            <div>                    
+                <h1 class="pb-8 md:pb-6 pt-10 text-[#E63946] text-2xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold whitespace-nowrap">Frequently Asked Question (FAQ)</h1> 
+                <div class="border border-[1px] border-[#637381]"></div>                
+                <p class=" pt-4 text-white text-base md:text-lg lg:text-xl leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">
+                    Every drop of blood you give brings someone closer to <br> life, healing, and hope. LifeFlow bridges the gap between <br> willing donors and those in urgent need.<br>
+                    Find nearby hospitals in need and donate on your <br> schedule.
+                </p>                
+            </div>                
+            <div class="mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-[45px] flex flex-col sm:flex-row">                    
+                <a href="#" onclick="openForm()">                        
+                    <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 md:p-2 px-6 md:px-6 rounded-md transition-colors duration-200">Donate Now</button>                    
+                </a>                    
+                <a href="#" class="w-full sm:w-auto">                        
+                    <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white p-3 md:p-2 px-8 md:px-12 rounded-lg outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
+                </a>                
+            </div>                
+            <div class="mt-6 md:mt-8 text-white text-sm md:text-base">                    
+                <p class="leading-relaxed">By clicking get started to join or sign in, you agree to LifeFlows<br class="hidden md:block">                    
+                <span style="color: #009CFF;"><a href="" class="hover:underline">User Agreement </a></span> and <span style="color: #009CFF;"><a href="" class="hover:underline">Privacy Policies.</a></span></p>                
+            </div>            
+        </div>            
+        <div class="w-1/5 lg:w-auto flex justify-center order-1 lg:order-2 mb-12 lg:mb-0 mt-8 md:mt-16 lg:mt-4">                
+            <img src="./assets/images/coronavirus-blood-samples-assortment-lab 1.svg" alt="Hero Image" class="max-w-full h-auto bg-contain  md:w-3/4 lg:w-3/4">            
+        </div>        
+    </div>
+    
+
+
+
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="lib/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

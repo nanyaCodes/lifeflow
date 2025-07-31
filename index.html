@@ -57,7 +57,7 @@
         }
         
         .hospital-scroll-container {
-            animation-duration: 15s; /* Faster on mobile */
+            animation-duration: 15s;
             gap: 15px;
         }
         }
@@ -124,7 +124,121 @@
             width: 200px;
             flex-shrink: 0;
             padding: 0 8px;
+        }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .loading-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .location-pin {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .modal-overlay {
+            backdrop-filter: blur(4px);
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .time-picker-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+        .time-picker-item:hover {
+            background-color: #f3f4f6;
+            border-radius: 6px;
+        }
+        .time-picker-selected {
+            background-color: #f3f4f6 !important;
+            color: #000 !important;
+            font-weight: 600 !important;
+            font-size: 1.5rem !important;
+            border-radius: 6px;
+            transform: scale(1.1);
+        }
+        .time-scroller {
+            scroll-behavior: smooth;
+        }
+
+        
+        [data-aos="fade-up-slow"] {
+            transform: translate3d(0, 60px, 0);
+            opacity: 0;
+        }
+
+        [data-aos="fade-up-slow"].aos-animate {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+
+        .enhanced-image {
+            filter: brightness(1.1) contrast(1.1) saturate(1.2);
+        }
+
+        #mobile-menu {
+            transition: all 0.9s ease-in-out;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #mobile-menu.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 640px) {
+            nav {
+                left: 20px !important;
+                width: calc(100% - 40px) !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                left: 10px !important;
+                width: calc(100% - 20px) !important;
+            }
+        }
+
+    
+        @media (max-width: 768px) {
+            .section-content {
+                text-align: center;
+            }
+            
+            .section-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
 
     </style>
@@ -132,7 +246,7 @@
 <body>
     <!-- navigation bar -->
     <div class="bg-gradient-to-r from-[#1D3557] to-[#802027] relative">
-        <nav class="bg-[#1D3557] w-5/6 rounded-lg outline-white outline-1 outline absolute top-[35px] left-[100px]">
+        <nav class="bg-[#1D3557] w-5/6 rounded-lg outline-white outline-1 outline absolute top-[35px] left-[100px]" data-aos="fade-down">
             <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
                 <div class="relative flex h-16 items-center justify-between">
                     <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
@@ -154,14 +268,6 @@
                             <div class="flex shrink-0 items-center">
                                 <img src="./assets/logo/logo.svg" alt="" class="h-8 w-auto"/>
                             </div>
-                            <!-- Desktop menu -->
-                            <div class="hidden sm:ml-6 sm:block">
-                                <div class="flex space-x-4 items-center">
-                                    <a href="#" class="text-lg font-light text-white hover:text-[#E63946]">How it works</a>
-                                    <a href="#" class="text-lg font-light text-white hover:text-[#E63946] ">Contact</a>
-                                    <a href="#" class="text-lg font-light text-gray-300 hover:text-[#E63946]">FAQ</a>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="flex items-center gap-[40px] hidden sm:ml-6 sm:block">
@@ -174,16 +280,12 @@
                 </div>
                 
                 <!-- Mobile menu -->
-                <div id="mobile-menu" class="hidden sm:hidden">
+                <div id="mobile-menu" class="hidden sm:hidden overflow-hidden">
                     <div class="space-y-1 px-2 pb-3 pt-2">
-                        <a href="#" aria-current="page" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white">How it works</a>
-                        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact</a>
-                        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">FAQ</a>
-
-                        <div class="flex items-center gap-[50px]">
-                            <a href="#" class="text-lg font-light text-white hover:text-[#E63946]">Sign Up</a>
-                            <a href="#" onclick="openForm()">
-                                <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-1 px-4 rounded-md ">Donate Now</button>
+                        <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                            <a href="#" class="w-full text-center text-lg font-light text-white hover:text-[#E63946] transition-colors duration-200">Sign Up</a>
+                            <a href="#" onclick="openForm()" class="w-full">
+                                <button class="w-full text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md transition-colors duration-200">Donate Now</button>
                             </a>
                         </div>
                     </div>
@@ -193,35 +295,59 @@
 
         <!-- hero-section -->
         <div class="flex flex-col lg:flex-row justify-between items-center min-h-screen px-4 lg:px-0">            
-            <div class="pt-16 md:pt-32 lg:pt-4 p-4 md:p-8 lg:p-12 w-full lg:w-auto order-2 lg:order-1">                
+            <div class="pt-16 md:pt-32 lg:pt-4 p-4 md:p-8 lg:p-12 w-full lg:w-auto order-1 lg:order-1">                
                 <div>                    
-                    <h1 class="pb-8 md:pb-6 text-white text-2xl md:text-5xl lg:text-3xl xl:text-6xl font-medium whitespace-nowrap">Your Flow,Their Hope</h1>                    
-                    <p class=" pt-4 text-white text-base md:text-lg lg:text-xl leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">
-                        Every drop of blood you give brings someone closer to <br> life, healing, and hope. LifeFlow bridges the gap between <br> willing donors and those in urgent need.<br>
-                        Find nearby hospitals in need and donate on your <br> schedule.
+                    <h1 class="pb-8 pt-24 md:pb-6 text-white text-3xl md:text-6xl lg:text-3xl xl:text-6xl font-medium whitespace-nowrap">Your Flow,Their Hope</h1>                    
+                    <p class="pt-4 text-white text-md md:text-2xl lg:text-xl leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">
+                        Every drop of blood you give brings someone closer to <br> life, healing, and hope. LifeFlow bridges the gap between <br> willing donors and those in urgent need.
+                        Find nearby hospitals in need and donate on your schedule.
                     </p>                
                 </div>                
-                <div class="mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-[45px] flex flex-col sm:flex-row">                    
+                
+                <!-- Buttons - hidden on mobile, shown on desktop -->
+                <div class="hidden lg:flex mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-[45px] flex-col sm:flex-row">                    
                     <a href="#" onclick="openForm()">                        
                         <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 md:p-2 px-6 md:px-6 rounded-md transition-colors duration-200">Donate Now</button>                    
                     </a>                    
                     <a href="#" class="w-full sm:w-auto">                        
                         <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white p-3 md:p-2 px-8 md:px-12 rounded-lg outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
                     </a>                
-                </div>                
-                <div class="mt-6 md:mt-8 text-white text-sm md:text-base">                    
+                </div>
+                
+                <!-- Terms text - hidden on mobile, shown on desktop -->
+                <div class="hidden lg:block mt-6 md:mt-8 text-white text-sm md:text-base">                    
                     <p class="leading-relaxed">By clicking get started to join or sign in, you agree to LifeFlows<br class="hidden md:block">                    
                     <span style="color: #009CFF;"><a href="" class="hover:underline">User Agreement </a></span> and <span style="color: #009CFF;"><a href="" class="hover:underline">Privacy Policies.</a></span></p>                
                 </div>            
             </div>            
-            <div class="w-full lg:w-auto flex justify-center order-1 lg:order-2 mb-18 lg:mb-0 mt-8 md:mt-16 lg:mt-32">                
+            
+            <!-- Image - shows second on mobile, first on desktop -->
+            <div class="w-full lg:w-auto flex justify-center order-2 lg:order-2 mb-8 lg:mb-0 mt-8 md:mt-16 lg:mt-32">                
                 <img src="./assets/images/hero-img.svg" alt="Hero Image" class="max-w-full h-auto bg-contain w-full md:w-3/4 lg:w-full">            
+            </div>
+            
+            <!-- Mobile buttons - shows after image on mobile only -->
+            <div class="lg:hidden w-full order-3 px-4 mb-8">
+                <div class="flex flex-col gap-4">                    
+                    <a href="#" onclick="openForm()" class="w-full">                        
+                        <button class="w-full text-base font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-4 rounded-full transition-colors duration-200">Donate Now</button>                    
+                    </a>                    
+                    <a href="#" class="w-full">                        
+                        <button class="w-full text-base font-semibold text-white p-4 rounded-full outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
+                    </a>                
+                </div>
+                
+                <!-- Mobile terms text -->
+                <div class="mt-6 text-white text-sm text-center">                    
+                    <p class="leading-relaxed">By clicking get started to join or sign in, you agree to LifeFlows<br>                    
+                    <span style="color: #009CFF;"><a href="" class="hover:underline">User Agreement </a></span> and <span style="color: #009CFF;"><a href="" class="hover:underline">Privacy Policies.</a></span></p>                
+                </div>
             </div>        
         </div>
     </div>
 
-    <div>
-        <div class="flex justify-center mt-6 text-[#E63946] italic text-2xl font-medium">
+    <div class="section-content" >
+        <div class="flex justify-center mt-6 text-[#E63946] italic text-xl md:text-2xl font-medium">
             <h3>Trusted by Hospitals Nationwide</h3>
         </div>
 
@@ -234,32 +360,55 @@
                 <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
                 <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
                 <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
-                
+                <img src="./assets/images/hospital-7.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-8.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-9.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-10.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-11.svg" alt="Hospital Partner 5">
+
                 <!-- Duplicated set for seamless loop -->
+                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 6">
+                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
+                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+                <img src="./assets/images/hospital-7.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-8.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-9.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-10.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-11.svg" alt="Hospital Partner 5">
                 <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
                 <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
                 <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
                 <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
                 <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
                 <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
-                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
-                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
-                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
-                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
-                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
-                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
-                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
-                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
-                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
-                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
-                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
-                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
-                <img src="./assets/images/hospital-1.svg" alt="Hospital Partner 1">
-                <img src="./assets/images/hospital-2.svg" alt="Hospital Partner 2">
-                <img src="./assets/images/hospital-3.svg" alt="Hospital Partner 3">
-                <img src="./assets/images/hospital-4.svg" alt="Hospital Partner 4">
-                <img src="./assets/images/hospital-5.svg" alt="Hospital Partner 5">
-                <img src="./assets/images/hospital-6.svg" alt="Hospital Partner 6">
+                <img src="./assets/images/hospital-7.svg" alt="Hospital Partner 1">
+                <img src="./assets/images/hospital-8.svg" alt="Hospital Partner 2">
+                <img src="./assets/images/hospital-9.svg" alt="Hospital Partner 3">
+                <img src="./assets/images/hospital-10.svg" alt="Hospital Partner 4">
+                <img src="./assets/images/hospital-11.svg" alt="Hospital Partner 5">
+            </div>
+        </div>
+    </div>
+
+    <!-- This section appears on mobile only -->
+    <div class=" bg-[#1D3557] mt-8 flex flex-col lg:flex-row justify-center items-center min-h-screen px-4 section-content md:hidden grid">
+        <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-8 pt-24 md:pt-32 lg:pt-4">
+            <div class="flex-shrink-0 section-image lg:-ml-8">
+                <img class="w-2/3 md:w-1/3 lg:w-3/5 mx-auto lg:mx-0" src="./assets/images/Mask group.svg" alt="">
+            </div>
+        
+            <div class="flex-shrink-0 -ml-2 md:-ml-3 lg:-ml-80 mb-20 text-white ">
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center lg:text-left text-[#E63946] mb-4">For Hospitals</h2>
+                <h6 class="italic font-medium">Need Blood? We’ve Got You Covered</h6>
+                <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose mt-4">LifeFlow connects your hospital to a growing network of voluntary blood donors. Whether you're managing a blood bank or facing an urgent shortage, our platform helps you find compatible donors quickly and efficiently.</p>
+                <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose mt-4 ">Sign up to register your hospital, post blood requests, and get matched with ready donors based on location, blood type, and availability.
+                It’s fast, secure, and built with your patients in mind.</p>
+                <a href="#">
+                  <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 px-10 rounded-md items-center mt-8">Sign Up</button>
+                </a>
             </div>
         </div>
     </div>
@@ -288,7 +437,7 @@
                     </div>                                                 
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Phone Number <span class="text-red-500">*</span></div>                    
-                        <input type="tel" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input type="number" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                             
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Email Address <span class="text-red-500">*</span></div>                    
@@ -310,28 +459,41 @@
                     </div>                                           
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Location / Address</div>                    
-                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input id="locationInput" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                           
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Nearest Landmark</div>                    
-                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input id="landmarkInput" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                           
                     <div class="pt-2">                    
                         <div class="text-gray-600 text-sm mb-3">Gender</div>                    
                         <div class="flex flex-row gap-2">                        
                             <label class="flex items-center cursor-pointer">                            
-                                <input type="radio" name="gender" value="male" class="mr-3 text-red-500 focus:ring-red-500">                            
+                                <input type="radio" name="gender" value="male" class="mr-3 accent-red-500 focus:ring-red-500">                            
                                 <span class="text-gray-600 text-sm">Male</span>                        
                             </label>                        
                             <label class="flex items-center cursor-pointer">                            
-                                <input type="radio" name="gender" value="female" class="mr-3 text-red-500 focus:ring-red-500" checked>                            
+                                <input type="radio" name="gender" value="female" class="mr-3 accent-red-500 focus:ring-red-500" checked>                            
                                 <span class="text-gray-600 text-sm">Female</span>                        
                             </label>                        
                             <label class="flex items-center cursor-pointer">                            
-                                <input type="radio" name="gender" value="prefer-not-to-say" class="mr-3 text-red-500 focus:ring-red-500">                            
+                                <input type="radio" name="gender" value="prefer-not-to-say" class="mr-3 accent-red-500 focus:ring-red-500">                            
                                 <span class="text-gray-600 text-sm">Prefer not to say</span>                        
-                            </label>                    
-                        </div>                
+                            </label> 
+                        </div> 
+                        
+                        <div class="flex items-start space-x-3 mb-6 mt-5">
+                            <div class="flex-shrink-0 mt-1">
+                                <input 
+                                    type="checkbox" 
+                                    id="notification-checkbox"
+                                    class="w-5 h-5 border-gray-300 accent-black rounded focus:ring-2"
+                                >
+                            </div>
+                            <label for="notification-checkbox" class="text-gray-700 text-base leading-relaxed cursor-pointer">
+                                I agree to be notified anytime there is a request for donation
+                            </label>
+                        </div>
                     </div>                                           
                     <button type="button" onclick="findHospitals()" class="w-full bg-red-500 text-white text-lg py-3 rounded font-bold hover:bg-red-600 transition-colors mt-6">                    
                         Find Hospitals Near Me                
@@ -344,17 +506,272 @@
         </div>    
     </div>
 
-    <div class="bg-[#1D3557] mt-8">
-        <div class="text-white p-16">
-            <h2 class="pb-6 md:pb-6 text-xl md:text-2xl lg:text-2xl xl:text-4xl font-medium whitespace-nowrap">Be a Lifeline in 3 Simple Steps</h2>
-            <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">Every two seconds, someone in need requires blood. Your decision to donate could be the difference between life  and loss. Whether it's a mother in surgery, a child with anemia, or an accident victim you can be their lifeline.
+    <div id="hospitalModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
+            
+            <!-- Loading Screen -->
+            <div id="loadingScreen" class="relative h-96 bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-center p-8">
+                
+                <!-- Location Pin Icon -->
+                <div class="location-pin mb-8">
+                    <svg width="60" height="60" viewBox="0 0 60 80" class="drop-shadow-md">
+                        <!-- Main pin body -->
+                        <path d="M30 0C13.5 0 0 13.5 0 30C0 52.5 30 80 30 80S60 52.5 60 30C60 13.5 46.5 0 30 0Z" fill="#EF4444"/>
+                        <!-- Inner circle -->
+                        <circle cx="30" cy="30" r="12" fill="white" opacity="0.9"/>
+                        <circle cx="30" cy="30" r="8" fill="#EF4444" opacity="0.7"/>
+                    </svg>
+                </div>
+
+                <!-- Three loading dots -->
+                <div class="flex space-x-2 mb-6">
+                    <div id="dot1" class="w-3 h-3 bg-red-500 rounded-full opacity-30"></div>
+                    <div id="dot2" class="w-3 h-3 bg-red-500 rounded-full opacity-30"></div>
+                    <div id="dot3" class="w-3 h-3 bg-red-500 rounded-full opacity-30"></div>
+                </div>
+
+                <!-- Text content -->
+                <div class="text-center">
+                    <h2 id="statusText" class="text-xl font-semibold text-gray-600 mb-4">
+                        Please wait...
+                    </h2>
+                    <p class="text-gray-500 text-sm leading-relaxed max-w-xs">
+                        Hold on, we're locating you to show nearby hospitals and donation points.
+                    </p>
+                </div>
+
+                <!-- Close button -->
+                <button 
+                    onclick="closeModal()" 
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Hospital Results Screen -->
+            <div id="resultsScreen" class="hidden">
+                <div class="relative h-80 bg-gradient-to-br from-green-100 via-blue-50 to-green-200 overflow-hidden">
+                    <button 
+                        onclick="closeModal()" 
+                        class="absolute top-4 right-4 z-20 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-700 transition-colors"
+                    >
+                        <span class="text-sm font-bold">×</span>
+                    </button>
+
+                    <svg id="mapSvg" class="absolute inset-0 w-full h-full" viewBox="0 0 400 300">
+                    </svg>
+
+                    <!-- Main Hospital Pin -->
+                    <div id="hospitalPin" class="absolute top-20 left-32 transform -translate-x-1/2">
+                        <div class="relative">
+                            <div class="absolute top-12 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-black opacity-20 rounded-full blur-sm"></div>
+                            <svg width="50" height="65" viewBox="0 0 50 65" class="drop-shadow-lg">
+                                <path d="M25 0C11.2 0 0 11.2 0 25C0 43.8 25 65 25 65S50 43.8 50 25C50 11.2 38.8 0 25 0Z" fill="#EF4444"/>
+                                <circle cx="25" cy="25" r="10" fill="white" opacity="0.9"/>
+                                <circle cx="25" cy="25" r="6" fill="#EF4444" opacity="0.8"/>
+                            </svg>
+                            <div id="hospitalInfo" class="absolute -top-2 left-16 bg-white p-2 rounded shadow-lg border text-xs whitespace-nowrap">
+                                <div id="hospitalName" class="font-semibold text-gray-800">National Hospital Abuja</div>
+                                <div id="hospitalCode" class="text-gray-600">PMB 425</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hospital Details -->
+                <div class="p-6 bg-white">
+                    <h2 id="hospitalTitle" class="text-2xl font-bold text-gray-800 mb-2">National Hospital Abuja</h2>
+                    <p id="hospitalAddress1" class="text-gray-600 mb-1">PMB 425 Ali Muhammad Zarah Street, Central Business Dis, Abuja 900103,</p>
+                    <p id="hospitalAddress2" class="text-gray-600 mb-4">Federal Capital Territory</p>
+                    
+                    <div class="flex items-center text-gray-700 mb-6">
+                        <svg width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                        </svg>
+                        <span id="hospitalDistance" class="font-medium">9 Km away</span>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button onclick="openModal()" class="flex-1 bg-red-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                            Make Appointment
+                        </button>
+                        <button class="flex-1 bg-white text-red-500 border-2 border-red-500 py-3 px-6 rounded-lg font-semibold hover:bg-red-50 transition-colors">
+                            Show direction
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOverlay" class="fixed inset-0 bg-opacity-70 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-gray-100 rounded-xl p-6 w-full max-w-lg mx-4 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded-full flex items-center justify-center text-gray-600 text-xl transition-colors">
+                ×
+            </button>
+
+            <!-- Modal Header -->
+            <h2 class="text-2xl font-semibold text-red-600 text-center mb-2">Schedule Your Donation</h2>
+            <p class="text-gray-600 italic text-center mb-6">Book a time to donate at National Hospital Abuja</p>
+
+            <!-- Date Selection Section -->
+            <div class="mb-6">
+                <label id="appointment" class="block text-gray-700 font-medium mb-2">Select Date of Appointment</label>
+                <input type="text" id="dateDisplay" value="01/01/2025" readonly 
+                class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white text-gray-700 cursor-pointer">
+                
+                <!-- Calendar -->
+                <div class="bg-white border border-gray-300 rounded-lg p-4 mt-3">
+                    <!-- Calendar Header -->     
+                    <div class="flex justify-between items-center mb-4">
+                        <span id="monthYear" class="font-semibold text-gray-800">June 2024</span>
+                        <div>
+                            <button onclick="previousMonth()" class="p-2 hover:bg-gray-100 rounded text-gray-600 text-lg"><span style="color: #009CFF;">‹</span></button>
+                            <button onclick="nextMonth()" class="p-2 hover:bg-gray-100 rounded text-gray-600 text-lg"><span style="color: #009CFF;">›</span></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendar Grid -->
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-center text-sm hover:text-blue-500"></div>
+                </div>
+            </div>
+
+            <div id="timeSection" class="opacity-50 pointer-events-none">
+                <label class="block text-gray-700 font-medium mb-2">Select Time of Appointment</label>
+                
+                <input type="text" id="timeDisplay" value="8:30 am" readonly 
+                class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white text-gray-700 mb-4">
+                
+                <!-- Time Picker -->
+                <div class="bg-white border border-gray-300 rounded-lg p-6 flex justify-center items-center gap-4 mb-6">
+                    <!-- Hour Column -->
+                    <div class="flex flex-col items-center">
+                        <div class="h-32 w-16 overflow-y-scroll scrollbar-hide relative" id="hourScroller">
+                            <div class="flex flex-col items-center py-16" id="hourContainer">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <span class="text-2xl font-semibold text-gray-600">:</span>
+                    
+                    <!-- Minute Column -->
+                    <div class="flex flex-col items-center">
+                        <div class="h-32 w-16 overflow-y-scroll scrollbar-hide relative" id="minuteScroller">
+                            <div class="flex flex-col items-center py-16" id="minuteContainer"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- AM/PM Toggle -->
+                    <div class="ml-4">
+                        <button onclick="toggleAmPm()" id="ampmToggle" class="bg-gray-100 border border-gray-300 hover:bg-gray-200 px-4 py-2 rounded font-semibold text-lg transition-colors">PM</button>
+                    </div>
+                </div>
+                
+                <button onclick="confirmAppointment()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-lg text-lg transition-colors">
+                    Confirm Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="confirmationModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 overflow-hidden relative">
+            
+            <!-- Close button -->
+            <button 
+                onclick="closeConfirmationModal()" 
+                class="absolute top-4 right-4 z-20 text-gray-500 hover:text-gray-700 transition-colors"
+            >
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <!-- Content -->
+            <div class="p-8 text-center">
+                <!-- Calendar Icon with red background -->
+                <div class="mx-auto mb-6 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                    <div class="bg-red-500 text-white px-3 py-2 rounded text-sm font-bold">
+                        EV
+                    </div>
+                </div>
+
+                <!-- Main heading -->
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    Appointment has been scheduled
+                </h2>
+
+                <!-- Subtext -->
+                <p class="text-gray-600 text-sm mb-8 leading-relaxed">
+                    Thank you for your appointment request. We will send you<br>
+                    an email notification shortly to confirm your request.
+                </p>
+
+                <!-- Appointment Details -->
+                <div class="space-y-4 mb-8 text-left">
+                    <!-- Time -->
+                    <div class="flex items-center text-gray-700">
+                        <svg width="16" height="16" fill="currentColor" class="mr-3" viewBox="0 0 16 16">
+                            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1z"/>
+                            <path d="M8 3.5a.5.5 0 0 0-1 0V8a.5.5 0 0 0 .293.455l3 1.5a.5.5 0 1 0 .414-.91L8 7.5V3.5z"/>
+                        </svg>
+                        <span id="confirmationTime" class="text-sm font-medium">10:00 AM</span>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="flex items-center text-gray-700">
+                        <svg width="16" height="16" fill="currentColor" class="mr-3" viewBox="0 0 16 16">
+                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                        </svg>
+                        <span id="confirmationDate" class="text-sm font-medium">August 2nd, 2025</span>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="flex items-start text-gray-700">
+                        <svg width="16" height="16" fill="currentColor" class="mr-3 mt-0.5 flex-shrink-0" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                        </svg>
+                        <div class="text-sm">
+                            <div class="font-medium">National Hospital Abuja, PMB 425 Ali</div>
+                            <div class="text-gray-600">Muhammad Zarah Street, Central Business</div>
+                            <div class="text-gray-600">Dis, Abuja 900103, Federal Capital Territory.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-4 rounded-lg text-lg transition-colors">
+                    Go to mail
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="md:bg-[#1D3557] bg-white mt-8">
+        <div class="text-black md:text-white p-8 md:p-16 section-content">
+            <h2 class="pb-6 md:pb-6 text-xl md:text-2xl lg:text-3xl xl:text-4xl font-medium text-center md:text-left">Be a Lifeline in 3 Simple Steps</h2>
+            <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-none md:max-w-prose text-center md:text-left">Every two seconds, someone in need requires blood. Your decision to donate could be the difference between life and loss. Whether it's a mother in surgery, a child with anemia, or an accident victim you can be their lifeline.
             Join a community of life-savers and make a lasting impact on your time, and in your city.</p>
-            <a href="#" onclick="openForm()">
-                <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md items-center mt-8">Donate Now</button>
-            </a>
+            <div class="flex justify-center md:justify-start">
+                <a href="#" onclick="openForm()">
+                    <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md items-center mt-8 transition-colors duration-200 hidden md:grid">Donate Now</button>
+                </a>
+            </div>
         </div>
 
-        <div class="relative pb-32">
+        <!-- Desktop Steps Layout -->
+        <div class="relative pb-32 hidden lg:block">
             <img class="mx-[140px] w-2/3 items-center flex" src="./assets/images/Line 1.svg" alt="">
             <div class="absolute top-[87px] left-[87px]">
                 <img class="w-[220px]" src="./assets/images/donate-bg.svg" alt="">
@@ -368,7 +785,6 @@
                 <h6 class="absolute top-[220px] left-[3px] text-white text-xl font-medium italic">Step 2: Fill Your Info</h6>
                 <p class="absolute top-[240px] left-[3px] text-white font-light">We match you to nearby hospitals</p>
             </div>
-
             <div class="absolute top-[-80px] right-[90px]">
                 <img class="w-[220px]" src="./assets/images/donate-bg.svg" alt="">
                 <img class="absolute w-[190px] right-[17px] top-[40px]" src="./assets/images/donate-3.svg" alt="">
@@ -376,16 +792,50 @@
                 <p class="absolute top-[240px] left-[3px] text-white font-light">Choose a time that works for you and show up to donate.</p>
             </div>
         </div>
+
+        <!-- Mobile/Tablet Steps Layout -->
+        <div class="flex flex-col items-center space-y-8 pb-16 lg:hidden px-4">
+            <!-- Step 1 -->
+            <div class="flex flex-col items-center text-center">
+                <div class="relative">
+                    <img class="w-[180px] md:w-[220px]" src="./assets/images/Rectangle 8.svg" alt="">
+                    <img class="absolute w-[160px] md:w-[200px] top-[60px] md:top-[80px] left-[19px] md:left-[20px]" src="./assets/images/contactUsBtn.svg" alt="">
+                </div>
+                <h6 class="text-black text-lg md:text-xl font-medium italic mt-4 mr-16">Step 1: Click Donate</h6>
+                <p class="text-black font-light text-sm md:text-base mr-28">No sign-up needed</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex flex-col items-center text-center">
+                <div class="relative">
+                    <img class="w-[180px] md:w-[220px]" src="./assets/images/Rectangle 8.svg" alt="">
+                    <img class="absolute w-[140px] md:w-[170px] top-[20px] md:top-[25px] right-[20px] md:right-[25px]" src="./assets/images/donate-2.svg" alt="">
+                </div>
+                <h6 class="text-black text-lg md:text-xl font-medium italic mt-4 mr-20">Step 2: Fill Your Info</h6>
+                <p class="text-black font-light text-sm md:text-base mr-12">We match you to nearby hospitals</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex flex-col items-center text-center">
+                <div class="relative">
+                    <img class="w-[180px] md:w-[220px]" src="./assets/images/Rectangle 8.svg" alt="">
+                    <img class="absolute w-[160px] md:w-[190px] right-[10px] md:right-[17px] top-[30px] md:top-[40px]" src="./assets/images/donate-3.svg" alt="">
+                </div>
+                <h6 class="text-black text-lg md:text-xl font-medium italic mt-4 mr-4">Step 3: Pick a Date & Donate</h6>
+                <p class="text-black font-light text-sm md:text-base mr-8 text-start">Choose a time that works for you and <br> show up to donate.</p>
+            </div>
+        </div> 
     </div>
 
-    <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen px-4 ">
+    <!-- This section appears on desktop only -->
+    <div class="flex flex-col lg:flex-row justify-center items-center min-h-screen px-4 section-content md:flex hidden">
         <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-8 pt-24 md:pt-32 lg:pt-4">
-            <div class="flex-shrink-0  -ml-8">
-                <img class="w-48 md:w-64 lg:w-3/5" src="./assets/images/Mask group.svg" alt="">
+            <div class="flex-shrink-0 section-image lg:-ml-8">
+                <img class="w-2/3 md:w-1/3 lg:w-3/5 mx-auto lg:mx-0" src="./assets/images/Mask group.svg" alt="">
             </div>
         
             <div class="flex-shrink-0 -ml-2 md:-ml-3 lg:-ml-80 mb-20">
-                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center md:text-left whitespace-nowrap text-[#E63946] mb-4">For Hospitals</h2>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center lg:text-left text-[#E63946] mb-4">For Hospitals</h2>
                 <h6 class="italic font-medium">Need Blood? We’ve Got You Covered</h6>
                 <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose mt-4">LifeFlow connects your hospital to a growing network of voluntary blood donors. Whether you're managing a blood bank or facing an urgent shortage, our platform helps you find compatible donors quickly and efficiently.
                 Sign up to register your hospital, post blood requests, and get matched with ready donors based on location, blood type, and availability.
@@ -397,13 +847,13 @@
         </div>
     </div>
 
-    <div class="bg-[#1D3557] pt-24 relative h-[480px]">
+    <div class="bg-[#1D3557] pt-24 relative h-[480px] section-content">
         <div>
-            <h2 class="flex justify-center text-white text-4xl font-medium">Real People. Real Impact.</h2>
-            <p class="flex justify-center text-white leading-relaxed italic mt-4">See how LifeFlow is making a difference, one donor and one hospital at a time.</p>
+            <h2 class="flex justify-center text-white text-2xl md:text-4xl font-medium">Real People. Real Impact.</h2>
+            <p class="flex justify-center text-white leading-relaxed italic mt-4 text-sm md:text-base px-4 text-center">See how LifeFlow is making a difference, one donor and one hospital at a time.</p>
         </div>
 
-        <div class="relative bg-white w-full max-w-7xl mx-auto h-[250px] rounded-lg shadow-lg">
+        <div class="relative md:bg-white w-full max-w-7xl mx-auto h-[250px] rounded-lg shadow-lg">
         <!-- Navigation Arrows -->
         <button id="prevBtn" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center z-10 transition-colors">
             <span class="text-lg font-bold">&lt;</span>
@@ -418,12 +868,12 @@
             <div id="carouselTrack" class="carousel-track h-full items-center pt-8">
                 <!-- Card 1 -->
                 <div class="carousel-slide">
-                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col ">
+                    <div class="md:bg-[#1D3557] bg-white w-[200px] h-[180px] rounded-lg p-3 flex flex-col ">
                         <div class="flex justify-center mb-2">
                             <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
                         </div>
-                        <p class="text-[10px] leading-tight text-white text-center flex-grow">"Before LifeFlow, matching blood donors to our patients was stressful. Now we can post a request and get matched within hours. It's been a game-changer for our emergency team."</p>
-                        <p class="text-[10px] text-white text-center mt-2">
+                        <p class="text-[10px] leading-relaxed md:text-white text-[#1D3557] text-center flex-grow">"Before LifeFlow, matching blood donors to our patients was stressful. Now we can post a request and get matched within hours. It's been a game-changer for our emergency team."</p>
+                        <p class="text-[10px] md:text-white text-[#1D3557] text-center mt-2">
                             <strong>Dr. Nnenna O.</strong><br>
                             <span class="text-[9px]">Medical Director, Gracefield Hospital</span>
                         </p>
@@ -436,8 +886,8 @@
                         <div class="flex justify-center mb-2">
                             <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
                         </div>
-                        <p class="text-[10px] leading-tight text-white text-center flex-grow">"I've always wanted to donate blood, but I didn't know where to start. LifeFlow made it so easy. I just filled a form, picked a hospital, and got a thank-you text after donating."</p>
-                        <p class="text-[10px] text-white text-center mt-2">
+                        <p class="text-[10px] leading-relaxed md:text-white text-[#1D3557] text-center flex-grow">"I've always wanted to donate blood, but I didn't know where to start. LifeFlow made it so easy. I just filled a form, picked a hospital, and got a thank-you text after donating."</p>
+                        <p class="text-[10px] md:text-white text-[#1D3557] text-center mt-2">
                             <strong>Ayo F.</strong><br>
                             <span class="text-[9px]">First-Time Donor</span>
                         </p>
@@ -474,7 +924,7 @@
 
                     <!-- Card 5 (New) -->
                 <div class="carousel-slide">
-                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-48">
+                    <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[150px]">
                        <div class="flex justify-center mb-2">
                             <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
                         </div>
@@ -488,7 +938,7 @@
 
                     <!-- Card 6 (New) -->
                     <div class="carousel-slide">
-                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-60">
+                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[190px]">
                             <div class="flex justify-center mb-2">
                                 <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
                             </div>
@@ -502,7 +952,7 @@
 
                     <!-- Card 7 (New) -->
                     <div class="carousel-slide">
-                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[20px]">
+                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[230px]">
                             <div class="flex justify-center mb-2">
                                 <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
                             </div>
@@ -516,7 +966,7 @@
 
                     <!-- Card 8 (New) -->
                     <div class="carousel-slide">
-                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[55px]">
+                        <div class="bg-[#1D3557] w-[200px] h-[180px] rounded-lg p-3 flex flex-col mx-[270px]">
                             <div class="flex justify-center mb-2">
                                 <img class="w-[18px] h-[18px]" src="./assets/images/icon-park-solid_avatar.svg" alt="Avatar">
                             </div>
@@ -527,6 +977,7 @@
                             </p>
                         </div>
                     </div>
+                    <div class="mx-[360px]"></div>
                 </div>
             </div>
 
@@ -541,33 +992,110 @@
         </div>
     </div>
 
-    <div class="flex flex-col lg:flex-row justify-between items-center min-h-screen px-4 lg:px-0">            
-        <div class="pt-16 md:pt-32 lg:pt-4 p-4 md:p-8 lg:p-20 w-full lg:w-auto order-2 lg:order-1 mb-44">                
+    <div class="flex flex-col lg:flex-row justify-between items-center mb-12 px-4 lg:px-0 section-content">            
+        <div class="pt-8 md:pt-32 p-4 md:p-8 lg:p-20 w-full lg:w-auto order-2 lg:order-1 text-center lg:text-left">                
             <div>                    
-                <h1 class="pb-8 md:pb-6 pt-10 text-[#E63946] text-2xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold whitespace-nowrap">Frequently Asked Question (FAQ)</h1> 
-                <div class="border border-[1px] border-[#637381]"></div>                
-                <p class=" pt-4 text-white text-base md:text-lg lg:text-xl leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-prose">
-                    Every drop of blood you give brings someone closer to <br> life, healing, and hope. LifeFlow bridges the gap between <br> willing donors and those in urgent need.<br>
-                    Find nearby hospitals in need and donate on your <br> schedule.
-                </p>                
-            </div>                
-            <div class="mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-[45px] flex flex-col sm:flex-row">                    
-                <a href="#" onclick="openForm()">                        
-                    <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 md:p-2 px-6 md:px-6 rounded-md transition-colors duration-200">Donate Now</button>                    
-                </a>                    
-                <a href="#" class="w-full sm:w-auto">                        
-                    <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white p-3 md:p-2 px-8 md:px-12 rounded-lg outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
-                </a>                
-            </div>                
-            <div class="mt-6 md:mt-8 text-white text-sm md:text-base">                    
-                <p class="leading-relaxed">By clicking get started to join or sign in, you agree to LifeFlows<br class="hidden md:block">                    
-                <span style="color: #009CFF;"><a href="" class="hover:underline">User Agreement </a></span> and <span style="color: #009CFF;"><a href="" class="hover:underline">Privacy Policies.</a></span></p>                
-            </div>            
+                <h1 class="pb-8 md:pb-6 pt-10 text-[#E63946] text-2xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold">Frequently Asked Question (FAQ)</h1> 
+                <div class="border border-[1px] border-[#a8a8a8] mx-auto lg:mx-0 max-w-xs lg:max-w-xl"></div>                
+                <div class="flex justify-between">
+                    <p class="text-[#212B36] mt-5 font-medium"> Q1: Who can donate blood?</p>
+                    <img class="w-4" src="./assets/images/Frame 1124.svg" alt="">
+                    <p class="hidden">If you're between 18–65, in good health, and meet the minimum weight <br> requirement, you're likely eligible. We'll guide you through the checks <br> when you sign up.</p>
+                </div> 
+                <div class="border border-[1px] border-[#a8a8a8] mx-auto lg:mx-0 max-w-xs lg:max-w-none mt-4"></div> 
+                <div class="flex justify-between">
+                    <p class="text-[#212B36] mt-5 font-medium"> Q2: Is donating blood safe?</p>
+                    <img class="w-4" src="./assets/images/Frame 1124.svg" alt="">
+                </div> 
+                <div class="border border-[1px] border-[#a8a8a8] mx-auto lg:mx-0 max-w-xs lg:max-w-none mt-4"></div> 
+                <div class="flex justify-between">
+                    <p class="text-[#212B36] mt-5 font-medium">Q3: Can I request blood for someone else?</p>
+                    <img class="w-4" src="./assets/images/Frame 1124.svg" alt="">
+                </div>      
+                <div class="border border-[1px] border-[#a8a8a8] mx-auto lg:mx-0 max-w-xs lg:max-w-none mt-4"></div> 
+                <div class="flex justify-between">
+                    <p class="text-[#212B36] mt-5 font-medium">Q4: Do I get paid to donate blood?</p>
+                    <img class="w-4" src="./assets/images/Frame 1124.svg" alt="">
+                </div>                       
+            </div>                       
         </div>            
-        <div class="w-1/5 lg:w-auto flex justify-center order-1 lg:order-2 mb-12 lg:mb-0 mt-8 md:mt-16 lg:mt-4">                
-            <img src="./assets/images/coronavirus-blood-samples-assortment-lab 1.svg" alt="Hero Image" class="max-w-full h-auto bg-contain  md:w-3/4 lg:w-3/4">            
+        <div class="w-full lg:w-auto flex justify-center order-1 lg:order-2 mb-12 lg:mb-0 mt-8 md:mt-16 section-image">                
+            <img src="./assets/images/coronavirus-blood-samples-assortment-lab 1.svg" alt="Hero Image" class="max-w-full h-auto bg-contain w-3/4 md:w-3/4 lg:w-3/4">            
         </div>        
     </div>
+
+    <footer class="bg-[#1D3557] text-white py-10 px-10 max-w-full mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-8">
+            <div class="flex items-start gap-3">
+                <div>
+                    <img src="./assets/logo/logo.svg" alt="">
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-xl font-bold mb-5">Quick Link</h3>
+                <ul class="space-y-3">
+                    <li><a href="#home" class="text-lg hover:text-red-500">Home</a></li>
+                    <li><a href="#about" class="text-lg hover:text-red-500">About</a></li>
+                    <li><a href="#contact" class="text-lg hover:text-red-500">Contact Us</a></li>
+                    <li><a href="#blog" class="text-lg hover:text-red-500">Blog</a></li>
+                    <li><a href="#policies" class="text-lg hover:text-red-500">Policies</a></li>
+                </ul>
+            </div>
+
+            <!-- Get in Touch -->
+            <div>
+                <h3 class="text-xl font-bold mb-5">Get in Touch</h3>
+                <div class="space-y-3 text-sm">
+                    <p class="flex items-center gap-4">
+                        <span><img class="w-8" src="./assets/images/Phone.svg" alt=""></span>
+                        <span>(318) 555-0116</span>
+                    </p>
+                    <p class="flex items-center gap-4">
+                        <span><img class="w-8" src="./assets/images/Mail.svg" alt=""></span>
+                        <span>sara.cruz@example.com</span>
+                    </p>
+                    <p class="flex items-center gap-4">
+                        <span><img class="w-8" src="./assets/images/Location.svg" alt=""></span>
+                        <span>3890 Poplar Dr.</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div>
+                <h3 class="text-xl font-bold mb-5">Subscribe to our Newsletter</h3>
+                <p class="text-md mb-5 leading-relaxed">Get the latest updates, insights, and exclusive LifeFlow news delivered to your inbox!</p>
+                <div class="flex">
+                    <input 
+                        type="email" 
+                        placeholder="Enter your mail" 
+                        class="flex-1 px-4 py-3 text-md text-red-200 rounded-l border-none outline-none"
+                    >
+                    <button class="bg-red-500 hover:bg-red-600 text-white px-14 py-3 text-sm font-bold rounded-r">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="pt-5 flex flex-col md:flex-row justify-center items-center gap-32 text-base">
+            <div>
+                <span>© LifeFlow 2025, All Rights Reserved</span>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8">
+                <a href="#terms" class="hover:underline">Terms of Use</a>
+                <a href="#privacy" class="hover:underline">Privacy Policy</a>
+            </div>
+            <div class="flex gap-3">
+                <a href="#"><img src="./assets/images/Instagram.svg" alt=""></a>
+                <a href="#"><img src="./assets/images/LinkedIn.svg" alt=""></a>
+                <a href="#"><img src="./assets/images/Facebook.svg" alt=""></a>
+            </div>
+        </div>
+    </footer>
     
 
 

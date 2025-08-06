@@ -415,290 +415,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('hospitalDistance').textContent = data.hospital.distance;
         }
 
-                
-        let currentMonth = 5;
-        let currentYear = 2024;
-        let selectedDate = null;
-        let selectedHour = 8;
-        let selectedMinute = 0;
-        let isAM = false;
-
-        const months = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-
-        function openModal() {
-            document.getElementById('modalOverlay').classList.remove('hidden');
-            document.getElementById('modalOverlay').classList.add('flex');
-            generateCalendar();
-            initializeScrollPickers();
-        }
-
-        function initializeScrollPickers() {
-            generateHours();
-            generateMinutes();
-            
-            const hourScroller = document.getElementById('hourScroller');
-            const minuteScroller = document.getElementById('minuteScroller');
-            
-            hourScroller.classList.add('time-scroller');
-            minuteScroller.classList.add('time-scroller');
-            
-            setTimeout(() => {
-                scrollToHour(selectedHour);
-                scrollToMinute(selectedMinute);
-            
-                let hourScrollTimeout;
-                let minuteScrollTimeout;
-                
-                hourScroller.addEventListener('scroll', () => {
-                    clearTimeout(hourScrollTimeout);
-                    hourScrollTimeout = setTimeout(handleHourScroll, 100);
-                });
-                
-                minuteScroller.addEventListener('scroll', () => {
-                    clearTimeout(minuteScrollTimeout);
-                    minuteScrollTimeout = setTimeout(handleMinuteScroll, 100);
-                });
-            }, 100);
-        }
-
-        function generateHours() {
-            const container = document.getElementById('hourContainer');
-            const hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-            
-            container.innerHTML = '';
-            
-            hours.forEach(hour => {
-                const hourDiv = document.createElement('div');
-                hourDiv.textContent = hour;
-                hourDiv.className = 'time-picker-item text-gray-400 text-lg py-2 px-3 min-w-12 text-center';
-                hourDiv.dataset.value = hour;
-                
-                hourDiv.addEventListener('click', () => {
-                    selectedHour = hour;
-                    scrollToHour(hour);
-                    updateTimeDisplay();
-                });
-                
-                container.appendChild(hourDiv);
-            });
-        }
-
-        function generateMinutes() {
-            const container = document.getElementById('minuteContainer');
-            
-            container.innerHTML = '';
-            
-            for (let minute = 0; minute <= 59; minute++) {
-                const minuteDiv = document.createElement('div');
-                minuteDiv.textContent = String(minute).padStart(2, '0');
-                minuteDiv.className = 'time-picker-item text-gray-400 text-lg py-2 px-3 min-w-12 text-center';
-                minuteDiv.dataset.value = minute;
-                
-                minuteDiv.addEventListener('click', () => {
-                    selectedMinute = minute;
-                    scrollToMinute(minute);
-                    updateTimeDisplay();
-                });
-                
-                container.appendChild(minuteDiv);
-            }
-        }
-
-        function scrollToHour(hour) {
-            const container = document.getElementById('hourContainer');
-            const scroller = document.getElementById('hourScroller');
-            const hourItems = container.children;
-            const hourIndex = hour - 1;
-            
-            if (hourItems[hourIndex]) {
-                const itemHeight = 44;
-                const scrollTop = hourIndex * itemHeight;
-                scroller.scrollTop = scrollTop;
-                
-                updateHourSelection(hour);
-            }
-        }
-
-        function scrollToMinute(minute) {
-            const container = document.getElementById('minuteContainer');
-            const scroller = document.getElementById('minuteScroller');
-            const minuteItems = container.children;
-            
-            if (minuteItems[minute]) {
-                const itemHeight = 44;
-                const scrollTop = minute * itemHeight;
-                scroller.scrollTop = scrollTop;
-                
-                updateMinuteSelection(minute);
-            }
-        }
-
-        function handleHourScroll() {
-            const scroller = document.getElementById('hourScroller');
-            const itemHeight = 44;
-            const scrollTop = scroller.scrollTop;
-            const centerIndex = Math.round(scrollTop / itemHeight);
-            const newHour = centerIndex + 1;
-            
-            if (newHour >= 1 && newHour <= 12 && newHour !== selectedHour) {
-                selectedHour = newHour;
-                updateHourSelection(selectedHour);
-                updateTimeDisplay();
-            }
-        }
-
-        function handleMinuteScroll() {
-            const scroller = document.getElementById('minuteScroller');
-            const itemHeight = 44;
-            const scrollTop = scroller.scrollTop;
-            const centerIndex = Math.round(scrollTop / itemHeight);
-            
-            if (centerIndex >= 0 && centerIndex <= 59 && centerIndex !== selectedMinute) {
-                selectedMinute = centerIndex;
-                updateMinuteSelection(selectedMinute);
-                updateTimeDisplay();
-            }
-        }
-
-        function updateHourSelection(selectedHourValue) {
-            const container = document.getElementById('hourContainer');
-            const hourItems = container.children;
-            
-            Array.from(hourItems).forEach(item => {
-                if (parseInt(item.dataset.value) === selectedHourValue) {
-                    item.className = 'time-picker-item time-picker-selected px-3 min-w-12 text-center py-2';
-                } else {
-                    item.className = 'time-picker-item text-gray-400 text-lg py-2 px-3 min-w-12 text-center';
-                }
-            });
-        }
-
-        function updateMinuteSelection(selectedMinuteValue) {
-            const container = document.getElementById('minuteContainer');
-            const minuteItems = container.children;
-            
-            Array.from(minuteItems).forEach(item => {
-                if (parseInt(item.dataset.value) === selectedMinuteValue) {
-                    item.className = 'time-picker-item time-picker-selected px-3 min-w-12 text-center py-2';
-                } else {
-                    item.className = 'time-picker-item text-gray-400 text-lg py-2 px-3 min-w-12 text-center';
-                }
-            });
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.add('hidden');
-            document.getElementById('modalOverlay').classList.remove('flex');
-
-            const timeSection = document.getElementById('timeSection');
-            timeSection.classList.add('opacity-50', 'pointer-events-none');
-        }
-
-        function generateCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            const monthYearElement = document.getElementById('monthYear');
-            
-            monthYearElement.textContent = `${months[currentMonth]} ${currentYear}`;
-            
-            grid.innerHTML = '';
-            
-            const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-            dayHeaders.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.textContent = day;
-                dayHeader.className = 'font-semibold text-gray-600 p-2';
-                grid.appendChild(dayHeader);
-            });
-    
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            
-            for (let i = 0; i < firstDay; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'p-2';
-                grid.appendChild(emptyDay);
-            }
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = day;
-                dayElement.className = 'p-2 cursor-pointer rounded hover:bg-gray-100 flex items-center justify-center min-h-8';
-                
-                if (day === 10) {
-                    dayElement.classList.add('bg-blue-100', 'text-blue-800');
-                }
-                if (day === 26) {
-                    dayElement.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
-                    selectedDate = day;
-                }
-                
-                dayElement.onclick = () => selectDate(day, dayElement);
-                grid.appendChild(dayElement);
-            }
-        }
-
-        function selectDate(day, element) {
-            document.querySelectorAll('#calendarGrid > div').forEach(el => {
-                el.classList.remove('bg-blue-500', 'text-white', 'hover:bg-blue-600');
-                if (!el.classList.contains('bg-blue-100')) {
-                    el.classList.add('hover:bg-gray-100');
-                }
-            });
-            
-        
-            element.classList.remove('hover:bg-gray-100');
-            element.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
-            selectedDate = day;
-            
-        
-            const formattedDate = `${String(day).padStart(2, '0')}/${String(currentMonth + 1).padStart(2, '0')}/${currentYear}`;
-            document.getElementById('dateDisplay').value = formattedDate;
-            
-            
-            const timeSection = document.getElementById('timeSection');
-            timeSection.classList.remove('opacity-50', 'pointer-events-none');
-            timeSection.classList.add('opacity-100');
-            
-            updateTimeDisplay();
-        }
-
-        function previousMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            generateCalendar();
-        }
-
-        function nextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            generateCalendar();
-        }
-
-        function updateTimeDisplay() {
-            const timeString = `${selectedHour}:${String(selectedMinute).padStart(2, '0')} ${isAM ? 'am' : 'pm'}`;
-            document.getElementById('timeDisplay').value = timeString;
-        }
-
-        function toggleAmPm() {
-            isAM = !isAM;
-            document.getElementById('ampmToggle').textContent = isAM ? 'AM' : 'PM';
-            updateTimeDisplay();
-        }
-
     
         let appointmentTime = "--:-- --";
         let appointmentDate = "-- --, ----";
-        
-        
+
+
         function showResults() {
             const loadingScreen = document.getElementById('loadingScreen');
             const resultsScreen = document.getElementById('resultsScreen');
@@ -735,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function() {
             appointmentTime = time;
             appointmentDate = date;
         }
-        
+         
         document.getElementById('hospitalModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
@@ -748,3 +469,83 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeConfirmationModal();
             }
         });
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            const requiredFields = document.querySelectorAll('input[required], textarea[required]');
+            let allValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    allValid = false;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            if (allValid) {
+                alert('Hospital account created successfully!');
+                // Here you would typically submit the form data
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.classList.add('border-red-500');
+            } else {
+                this.classList.remove('border-red-500');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const labels = document.querySelectorAll('label');
+            labels.forEach(label => {
+                if (label.innerHTML.includes('*')) {
+                    const input = document.getElementById(label.getAttribute('for'));
+                    if (input) {
+                        input.setAttribute('required', '');
+                    }
+                }
+            });
+        });
+
+        function openModal() {
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside of it
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });z
+
+       

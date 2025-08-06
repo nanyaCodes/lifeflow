@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in | Lifeflow</title>
+    <link rel="icon" type="image/x-icon" href="./assets/logo/logo.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="lib/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="min-h-5/6 flex items-center justify-center p-4">
+    <div class="w-full max-w-7xl mx-auto ">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-2xl bg-white h-[640px] p-8">
+            <!-- Doctor Image Section -->
+            <div class="relative flex items-center justify-center">
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <img src="./assets/images/female-doctor-showing-her-right-hand 1.svg" alt="Doctor pointing" class="max-w-full max-h-full object-contain">
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="relative h-[590px] left-2 shadow-2xl overflow-y-auto">
+                <!-- Close Button -->
+                <div class="absolute top-6 right-6 z-10">
+                    <button id="closeBtn" class="w-8 h-8 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center transition-colors">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-8 lg:p-12 h-2/3 mt-40 border border-transparent">
+                    <!-- Header -->
+                    <div class="mb-8 text-center">
+                        <h1 class="text-4xl font-bold text-[#1D3557] mb-3 ">Sign In</h1>
+                        <h2 class="text-xl text-[#1D3557] mb-3">Welcome Back</h2>
+                        <p class="text-gray-500 italic text-sm font-medium">Enter your details to login to your account</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form class="space-y-6">
+                        <!-- Email or Registration Number -->
+                        <div>
+                            <label for="emailOrRegistration" class="block text-gray-600 text-sm font-medium mb-2">
+                                Email or Registration Number <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="emailOrRegistration" 
+                                class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-transparent"
+                                placeholder=""
+                                required
+                            >
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="password" class="block text-gray-600 text-sm font-medium mb-2">
+                                Password <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-transparent"
+                                placeholder=""
+                                required
+                            >
+                        </div>
+
+                        <!-- Remember Me and Forgot Password -->
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="rememberMe" class="w-4 h-4 rounded">
+                                <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                            </label>
+                            <a href="#" onclick="openModal()" class="text-sm text-red-500 hover:text-red-600 font-medium">Forgot Password?</a>
+                        </div>
+
+                        <!-- Sign In Button -->
+                        <button 
+                            type="submit" 
+                            class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 text-lg mt-8"
+                        >
+                            Sign In
+                        </button>
+
+                        <!-- Sign Up Link -->
+                        <div class="text-center pt-4">
+                            <p class="text-gray-600">
+                                Not a member yet? 
+                                <a href="signup.html" class="text-red-500 hover:text-red-600 font-medium">Sign Up</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="modalOverlay" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50">
+        <!-- Modal Container -->
+        <div class="relative w-full max-w-4xl mx-4">
+            <!-- Modal Content -->
+            <div class="bg-white rounded-lg shadow-2xl flex overflow-hidden modal">
+                <!-- Left side - Form -->
+                <div class="w-1/2 h-96 mt-10 p-5 shadow-2xl mx-12">
+                    <!-- Close button -->
+                    <div class="flex justify-end mt-8">
+                        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Form content -->
+                    <div class="space-y-6 justify-center">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2 justify-center flex text-[#1D3557]">Forgot Password?</h2>
+                            <p class=" text-[#1D3557] flex justify-center">Enter your email to reset your password</p>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg  outline-none transition-colors"
+                                placeholder=""
+                            >
+                        </div>
+
+                        <div class="flex space-x-4 pt-4 justify-around">
+                            <button 
+                                type="submit" 
+                                class="bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-14 rounded-lg transition-colors"
+                            >
+                                Submit
+                            </button>
+                            <button 
+                                type="button" 
+                                onclick="closeModal()"
+                                class="rounded-lg shadow-2xl opacity-100 py-3 px-14 text-black font-medium border-1 border border-transparent"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right side - Image -->
+                <div class="w-1/2 flex items-center justify-center p-8 transform scale-x-[-1]">
+                    <img src="./assets/images/female-doctor-showing-her-right-hand 1.svg" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+
+
+
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="lib/aos.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>

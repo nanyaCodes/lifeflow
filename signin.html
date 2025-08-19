@@ -94,14 +94,11 @@
                         </div>
 
                         <!-- Sign In Button -->
-                        <button 
-                            type="submit" 
-                            class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 text-lg mt-8"
-                        >
-                            Sign In
-                        </button>
-
-                        <!-- Sign Up Link -->
+                        <button class="w-full bg-[#E63946] hover:bg-red-600 text-white text-center font-semibold py-4 px-6 rounded-lg transition-colors duration-200 text-lg mt-8">
+                            <a href="dashboard.html">
+                                Sign in
+                            </a>
+                        </button> 
                         <div class="text-center pt-4">
                             <p class="text-gray-600">
                                 Not a member yet? 
@@ -180,6 +177,34 @@
     
 
 
+
+    <script>
+        function openModal() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.remove('hidden');
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.add('hidden');
+        }
+
+        // Optional: Close modal when clicking outside of it
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Optional: Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+    </script>
 
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

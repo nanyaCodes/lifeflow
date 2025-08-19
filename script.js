@@ -57,495 +57,522 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-        function openForm() {
-            const modalOverlay = document.getElementById('modal-overlay');
-            modalOverlay.classList.remove('hidden');
-            
-            document.body.style.overflow = 'hidden';
-        }
 
-        function closeForm() {
-            const modalOverlay = document.getElementById('modal-overlay');
-            modalOverlay.classList.add('hidden');
-            // Restore body scrolling
-            document.body.style.overflow = 'auto';
-        }
+let currentMonth = 5; 
+let currentYear = 2024;
+let selectedDate = null;
 
-        document.getElementById('modal-overlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeForm();
-            }
-        });
+let selectedTime = {
+    hour: 8,
+    minute: 30,
+    period: 'AM'
+};
 
+// DOM elements
+const startProcessBtn = document.getElementById('startProcessBtn');
+const startBtn = document.getElementById('startBtn');
+const processBtn = document.getElementById('processBtn');
+const starterBtn = document.getElementById('starterBtn');
+const lifeBtn = document.getElementById('lifeBtn');
+const modalOverlay = document.getElementById('modal-overlay');
+const closeForm = document.getElementById('closeForm');
+const findHospitalsBtn = document.getElementById('findHospitalsBtn');
+const hospitalModal = document.getElementById('hospitalModal');
+const loadingScreen = document.getElementById('loadingScreen');
+const resultsScreen = document.getElementById('resultsScreen');
+const closeHospitalModal = document.getElementById('closeHospitalModal');
+const closeResultsModal = document.getElementById('closeResultsModal');
+const scheduleModal = document.getElementById('scheduleModal');
+const closeScheduleModal = document.getElementById('closeScheduleModal');
+const dateStep = document.getElementById('dateStep');
+const timeStep = document.getElementById('timeStep');
+const backButton = document.getElementById('backButton');
+const backToDate = document.getElementById('backToDate');
+const confirmAppointment = document.getElementById('confirmAppointment');
+const confirmationModal = document.getElementById('confirmationModal');
+const closeConfirmationModal = document.getElementById('closeConfirmationModal');
+const goToMail = document.getElementById('goToMail');
+
+// Event listeners for modal flow
+startProcessBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('hidden');
+});
+
+startBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('hidden');
+});
+
+starterBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('hidden');
+});
+
+processBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('hidden');
+});
+
+lifeBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('hidden');
+});
+
+closeForm.addEventListener('click', () => {
+    modalOverlay.classList.add('hidden');
+});
+
+findHospitalsBtn.addEventListener('click', () => {
+    const fullName = document.getElementById('fullName').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const emailAddress = document.getElementById('emailAddress').value;
+    const bloodGroup = document.getElementById('bloodGroup').value;
+
+    if (!fullName || !phoneNumber || !emailAddress || !bloodGroup) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    modalOverlay.classList.add('hidden');
+    showHospitalLoading();
+});
+
+function showHospitalLoading() {
+    hospitalModal.classList.remove('hidden');
+    hospitalModal.classList.add('flex');
+    loadingScreen.classList.remove('hidden');
+    resultsScreen.classList.add('hidden');
+
+    setTimeout(() => {
+        showHospitalResults();
+    }, 3000);
+}
+
+function showHospitalResults() {
+    loadingScreen.classList.add('hidden');
+    resultsScreen.classList.remove('hidden');
+}
+
+closeHospitalModal.addEventListener('click', () => {
+    hospitalModal.classList.add('hidden');
+    hospitalModal.classList.remove('flex');
+});
+
+closeResultsModal.addEventListener('click', () => {
+    hospitalModal.classList.add('hidden');
+    hospitalModal.classList.remove('flex');
+});
+
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'makeAppointmentBtn') {
+        console.log('Make appointment button clicked!');
+        hospitalModal.classList.add('hidden');
+        hospitalModal.classList.remove('flex');
+        scheduleModal.classList.remove('hidden');
+        scheduleModal.classList.add('flex');
+        showDateStep();
+        updateCalendar();
+    }
+});
+
+function openScheduleModal() {
+    scheduleModal.classList.remove('hidden');
+    scheduleModal.classList.add('flex');
+    showDateStep();
+    updateCalendar();
+}
+
+closeScheduleModal.addEventListener('click', () => {
+    scheduleModal.classList.add('hidden');
+    scheduleModal.classList.remove('flex');
+    resetScheduleModal();
+});
+
+function resetScheduleModal() {
+    showDateStep();
+    selectedDate = null;
+    selectedTime = {
+        hour: 8,
+        minute: 30,
+        period: 'AM'
+    };
+    if (document.getElementById('timeSelect')) {
+        document.getElementById('timeSelect').value = `${selectedTime.hour}:${selectedTime.minute.toString().padStart(2, '0')} ${selectedTime.period}`;
+    }
+    updateTimePicker();
+}
+
+function showDateStep() {
+    dateStep.classList.remove('hidden');
+    timeStep.classList.add('hidden');
+    backButton.classList.add('hidden');
+}
+
+function showTimeStep() {
+    dateStep.classList.add('hidden');
+    timeStep.classList.remove('hidden');
+    backButton.classList.remove('hidden');
+    updateTimePicker();
+}
+
+backToDate.addEventListener('click', showDateStep);
+
+confirmAppointment.addEventListener('click', () => {
+    console.log('Confirm appointment clicked!');
+    if (selectedDate && selectedTime) {
+        scheduleModal.classList.add('hidden');
+        scheduleModal.classList.remove('flex');
+        showConfirmationModal();
+    } else {
+        alert('Please select both date and time');
+    }
+});
+
+function showConfirmationModal() {
+    console.log('Showing confirmation modal...');
+    const timeString = `${selectedTime.hour}:${selectedTime.minute.toString().padStart(2, '0')} ${selectedTime.period}`;
+    document.getElementById('confirmationTime').textContent = timeString.toUpperCase();
     
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeForm();
-            }
-        })
+    if (selectedDate) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = selectedDate.toLocaleDateString('en-US', options);
+        const ordinal = getOrdinal(selectedDate.getDate());
+        const formattedDate = dateStr.replace(/\d+/, selectedDate.getDate() + ordinal);
+        document.getElementById('confirmationDate').textContent = formattedDate;
+    }
 
-        function findHospitals() {
-            alert('Finding hospitals near you...');
-            
-        }
+    confirmationModal.classList.remove('hidden');
+    confirmationModal.classList.add('flex');
+}
 
-        class TestimonialCarousel {
-            constructor() {
-                this.track = document.getElementById('carouselTrack');
-                this.slides = document.querySelectorAll('.carousel-slide');
-                this.nextBtn = document.getElementById('nextBtn');
-                this.prevBtn = document.getElementById('prevBtn');
-                this.dots = document.querySelectorAll('.dot');
-                
-                this.currentSlide = 0;
-                this.slidesToShow = 4;
-                this.slideWidth = 200; 
-                this.slideGap = 16; 
-                this.totalSlides = this.slides.length;
-                this.maxSlide = this.totalSlides - this.slidesToShow;
-                
-                this.init();
-            }
-            
-            init() {
-                this.nextBtn.addEventListener('click', () => this.nextSlide());
-                this.prevBtn.addEventListener('click', () => this.prevSlide());
-                
-            
-                this.dots.forEach((dot, index) => {
-                    dot.addEventListener('click', () => this.goToSlide(index));
-                });
-                
-                this.updateCarousel();
-            }
-            
-            nextSlide() {
-                if (this.currentSlide < this.maxSlide) {
-                    this.currentSlide++;
-                } else {
-                    this.currentSlide = 0; 
-                }
-                this.updateCarousel();
-            }
-            
-            prevSlide() {
-                if (this.currentSlide > 0) {
-                    this.currentSlide--;
-                } else {
-                    this.currentSlide = this.maxSlide; 
-                }
-                this.updateCarousel();
-            }
-            
-            goToSlide(slideIndex) {
-                this.currentSlide = slideIndex;
-                this.updateCarousel();
-            }
-            
-            updateCarousel() {
-                const translateX = -this.currentSlide * (this.slideWidth + this.slideGap);
-                this.track.style.transform = `translateX(${translateX}px)`;
-                
-                this.dots.forEach((dot, index) => {
-                    if (index === this.currentSlide) {
-                        dot.classList.remove('bg-gray-300');
-                        dot.classList.add('bg-red-500');
-                    } else {
-                        dot.classList.remove('bg-red-500');
-                        dot.classList.add('bg-gray-300');
-                    }
-                });
-        
-                this.prevBtn.style.opacity = this.currentSlide === 0 ? '0.5' : '1';
-                this.nextBtn.style.opacity = this.currentSlide === this.maxSlide ? '0.5' : '1';
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            new TestimonialCarousel();
-        });
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+}
 
-        AOS.init({
-            duration: 900,
-            easing: 'ease-in-out',
-            once: true,
-        });
+closeConfirmationModal.addEventListener('click', () => {
+    confirmationModal.classList.add('hidden');
+    confirmationModal.classList.remove('flex');
+    resetScheduleModal();
+});
 
-        function findHospitals() {
-            const modal = document.getElementById('hospitalModal');
-            const loadingScreen = document.getElementById('loadingScreen');
-            const resultsScreen = document.getElementById('resultsScreen');
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            
-            loadingScreen.classList.remove('hidden');
-            resultsScreen.classList.add('hidden');
-            
-            const dot1 = document.getElementById('dot1');
-            const dot2 = document.getElementById('dot2');
-            const dot3 = document.getElementById('dot3');
-            const statusText = document.getElementById('statusText');
-            
-            dot1.style.opacity = '0.3';
-            dot2.style.opacity = '0.3';
-            dot3.style.opacity = '0.3';
-            dot1.style.transform = 'scale(1)';
-            dot2.style.transform = 'scale(1)';
-            dot3.style.transform = 'scale(1)';
-            
-            statusText.textContent = 'Please wait...';
-            setTimeout(() => {
-                dot1.style.opacity = '1';
-                dot1.style.transform = 'scale(1.3)';
-                dot1.style.transition = 'all 0.4s ease';
-            }, 500);
-            
-            setTimeout(() => {
-                statusText.textContent = 'Fetching Nearby Hospitals...';
-                dot1.style.opacity = '0.3';
-                dot1.style.transform = 'scale(1)';
-                dot2.style.opacity = '1';
-                dot2.style.transform = 'scale(1.3)';
-                dot2.style.transition = 'all 0.4s ease';
-            }, 2000);
-            
-            setTimeout(() => {
-                statusText.textContent = 'Finding Perfect Match...';
-                dot2.style.opacity = '0.3';
-                dot2.style.transform = 'scale(1)';
-                dot3.style.opacity = '1';
-                dot3.style.transform = 'scale(1.3)';
-                dot3.style.transition = 'all 0.4s ease';
-            }, 4000);
-            
-            setTimeout(() => {
-                loadingScreen.classList.add('hidden');
-                resultsScreen.classList.remove('hidden');
-            }, 6000);
-        }
+goToMail.addEventListener('click', () => {
+    window.open('mailto:', '_blank');
+});
 
-        function closeModal() {
-            const modal = document.getElementById('hospitalModal');
-            const loadingScreen = document.getElementById('loadingScreen');
-            const resultsScreen = document.getElementById('resultsScreen');
-            
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            loadingScreen.classList.remove('hidden');
-            resultsScreen.classList.add('hidden');
-        }
+// Calendar navigation
+document.getElementById('prevMonth').addEventListener('click', () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    updateCalendar();
+});
 
-        document.getElementById('hospitalModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
+document.getElementById('nextMonth').addEventListener('click', () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    updateCalendar();
+});
 
-        const hospitalData = {
-            'abuja': {
-                hospital: {
-                    name: 'National Hospital Abuja',
-                    code: 'PMB 425',
-                    address1: 'PMB 425 Ali Muhammad Zarah Street, Central Business Dis, Abuja 900103,',
-                    address2: 'Federal Capital Territory',
-                    distance: '9 Km away'
-                },
-                landmarks: {
-                    roads: [
-                        'M0 150 Q100 100 200 150 T400 150',
-                        'M200 0 Q250 100 200 150 Q150 200 200 300',
-                        'M50 50 Q150 120 250 80 Q350 40 400 100',
-                        'M0 200 L150 180 L300 220 L400 200'
-                    ],
-                    parks: [
-                        { cx: 320, cy: 80, r: 40 },
-                        { cx: 350, cy: 220, r: 30 },
-                        { cx: 80, cy: 250, rx: 50, ry: 30, type: 'ellipse' }
-                    ],
-                    water: [
-                        { cx: 300, cy: 50, rx: 60, ry: 25 }
-                    ],
-                    hospitals: [
-                        { cx: 120, cy: 180, type: 'public' },
-                        { cx: 280, cy: 120, type: 'public' },
-                        { cx: 50, cy: 100, type: 'private' },
-                        { cx: 320, cy: 200, type: 'private' }
-                    ]
-                }
-            },
-            'lagos': {
-                hospital: {
-                    name: 'Lagos University Teaching Hospital',
-                    code: 'LUTH',
-                    address1: 'Idi-Araba, Surulere, Lagos 100254,',
-                    address2: 'Lagos State',
-                    distance: '12 Km away'
-                },
-                landmarks: {
-                    roads: [
-                        'M0 100 Q150 80 300 120 L400 100',
-                        'M100 0 L120 150 Q150 200 180 300',
-                        'M0 180 Q200 160 400 180',
-                        'M250 50 Q300 150 350 250'
-                    ],
-                    parks: [
-                        { cx: 150, cy: 200, r: 35 },
-                        { cx: 300, cy: 100, r: 25 }
-                    ],
-                    water: [
-                        { cx: 100, cy: 50, rx: 80, ry: 30 },
-                        { cx: 350, cy: 250, rx: 40, ry: 20 }
-                    ],
-                    hospitals: [
-                        { cx: 180, cy: 150, type: 'public' },
-                        { cx: 320, cy: 180, type: 'public' },
-                        { cx: 80, cy: 200, type: 'private' },
-                        { cx: 250, cy: 80, type: 'private' }
-                    ]
-                }
-            },
-            'kano': {
-                hospital: {
-                    name: 'Aminu Kano Teaching Hospital',
-                    code: 'AKTH',
-                    address1: 'Zaria Road, Kano 700001,',
-                    address2: 'Kano State',
-                    distance: '8 Km away'
-                },
-                landmarks: {
-                    roads: [
-                        'M0 150 L400 150',
-                        'M200 0 L200 300',
-                        'M50 100 Q200 80 350 100',
-                        'M100 200 Q250 220 350 200'
-                    ],
-                    parks: [
-                        { cx: 100, cy: 100, r: 30 },
-                        { cx: 300, cy: 200, r: 40 }
-                    ],
-                    water: [
-                        { cx: 200, cy: 250, rx: 70, ry: 25 }
-                    ],
-                    hospitals: [
-                        { cx: 150, cy: 120, type: 'public' },
-                        { cx: 250, cy: 180, type: 'public' },
-                        { cx: 100, cy: 200, type: 'private' },
-                        { cx: 300, cy: 100, type: 'private' }
-                    ]
-                }
-            },
-            'port harcourt': {
-                hospital: {
-                    name: 'University of Port Harcourt Teaching Hospital',
-                    code: 'UPTH',
-                    address1: 'Alakahia, Port Harcourt 500001,',
-                    address2: 'Rivers State',
-                    distance: '15 Km away'
-                },
-                landmarks: {
-                    roads: [
-                        'M0 120 Q100 140 200 120 Q300 100 400 120',
-                        'M150 0 Q170 150 150 300',
-                        'M50 200 L350 180',
-                        'M250 50 Q280 150 250 250'
-                    ],
-                    parks: [
-                        { cx: 200, cy: 80, r: 45 },
-                        { cx: 80, cy: 220, r: 30 },
-                        { cx: 320, cy: 180, r: 25 }
-                    ],
-                    water: [
-                        { cx: 150, cy: 200, rx: 60, ry: 40 },
-                        { cx: 350, cy: 100, rx: 30, ry: 20 }
-                    ],
-                    hospitals: [
-                        { cx: 100, cy: 150, type: 'public' },
-                        { cx: 300, cy: 140, type: 'public' },
-                        { cx: 180, cy: 120, type: 'private' },
-                        { cx: 250, cy: 220, type: 'private' }
-                    ]
-                }
-            }
-        };
+function updateCalendar() {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
 
-        function generateMap(locationKey) {
-            const data = hospitalData[locationKey];
-            if (!data) return '';
+    document.getElementById('monthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
-            let svgContent = '';
-
-            data.landmarks.roads.forEach((road, index) => {
-                const width = [8, 6, 4, 4][index] || 4;
-                const opacity = [0.7, 0.6, 0.5, 0.5][index] || 0.5;
-                svgContent += `<path d="${road}" stroke="#ddd" stroke-width="${width}" fill="none" opacity="${opacity}"/>`;
-            });
-            
-            data.landmarks.parks.forEach(park => {
-                if (park.type === 'ellipse') {
-                    svgContent += `<ellipse cx="${park.cx}" cy="${park.cy}" rx="${park.rx}" ry="${park.ry}" fill="#86efac" opacity="0.6"/>`;
-                } else {
-                    svgContent += `<circle cx="${park.cx}" cy="${park.cy}" r="${park.r}" fill="#86efac" opacity="0.6"/>`;
-                }
-            });
-            
-            
-            data.landmarks.water.forEach(water => {
-                svgContent += `<ellipse cx="${water.cx}" cy="${water.cy}" rx="${water.rx}" ry="${water.ry}" fill="#7dd3fc" opacity="0.6"/>`;
-            });
-            
-        
-            data.landmarks.hospitals.forEach(hospital => {
-                const color = hospital.type === 'public' ? '#3b82f6' : '#ec4899';
-                svgContent += `<circle cx="${hospital.cx}" cy="${hospital.cy}" r="4" fill="${color}"/>`;
-            });
-            
-            return svgContent;
-        }
-
-        function updateHospitalInfo(locationKey) {
-            const data = hospitalData[locationKey];
-            if (!data) return;
-
-            document.getElementById('hospitalName').textContent = data.hospital.name;
-            document.getElementById('hospitalCode').textContent = data.hospital.code;
-            document.getElementById('hospitalTitle').textContent = data.hospital.name;
-            document.getElementById('hospitalAddress1').textContent = data.hospital.address1;
-            document.getElementById('hospitalAddress2').textContent = data.hospital.address2;
-            document.getElementById('hospitalDistance').textContent = data.hospital.distance;
-        }
-
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
-        let appointmentTime = "--:-- --";
-        let appointmentDate = "-- --, ----";
+    const calendarDays = document.getElementById('calendarDays');
+    calendarDays.innerHTML = '';
 
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'p-2';
+        calendarDays.appendChild(emptyDay);
+    }
 
-        function showResults() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const resultsScreen = document.getElementById('resultsScreen');
-            
-            loadingScreen.classList.add('hidden');
-            resultsScreen.classList.remove('hidden');
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day p-2 text-center cursor-pointer rounded hover:bg-gray-100';
+        dayElement.textContent = day;
+        
+        
+        if (currentMonth === 5 && currentYear === 2024 && day === 26) {
+            dayElement.classList.add('selected');
+            selectedDate = new Date(currentYear, currentMonth, day);
+            updateDateInput();
         }
-        
-        function closeModal() {
-            const modal = document.getElementById('hospitalModal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
-        
-        function confirmAppointment() {
-            document.getElementById('confirmationTime').textContent = appointmentTime;
-            document.getElementById('confirmationDate').textContent = appointmentDate;
-            
-            closeModal();
-            
-            
-            const confirmationModal = document.getElementById('confirmationModal');
-            confirmationModal.classList.remove('hidden');
-            confirmationModal.classList.add('flex');
-        }
-        
-        function closeConfirmationModal() {
-            const confirmationModal = document.getElementById('confirmationModal');
-            confirmationModal.classList.remove('flex');
-            confirmationModal.classList.add('hidden');
-        }
-        
-        function setAppointmentData(time, date) {
-            appointmentTime = time;
-            appointmentDate = date;
-        }
-         
-        document.getElementById('hospitalModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-        
-        
-        document.getElementById('confirmationModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeConfirmationModal();
-            }
-        });
 
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        dayElement.addEventListener('click', () => {
             
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
-            
-            const requiredFields = document.querySelectorAll('input[required], textarea[required]');
-            let allValid = true;
-            
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.classList.add('border-red-500');
-                    allValid = false;
-                } else {
-                    field.classList.remove('border-red-500');
-                }
+            document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                el.classList.remove('selected');
             });
             
-            if (allValid) {
-                alert('Hospital account created successfully!');
-                // Here you would typically submit the form data
-            } else {
-                alert('Please fill in all required fields.');
-            }
-        });
-
-        document.getElementById('confirmPassword').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
+            dayElement.classList.add('selected');
+            selectedDate = new Date(currentYear, currentMonth, day);
+            updateDateInput();
             
-            if (confirmPassword && password !== confirmPassword) {
-                this.classList.add('border-red-500');
-            } else {
-                this.classList.remove('border-red-500');
-            }
+            setTimeout(() => {
+                showTimeStep();
+            }, 300);
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const labels = document.querySelectorAll('label');
-            labels.forEach(label => {
-                if (label.innerHTML.includes('*')) {
-                    const input = document.getElementById(label.getAttribute('for'));
-                    if (input) {
-                        input.setAttribute('required', '');
-                    }
-                }
-            });
-        });
+        calendarDays.appendChild(dayElement);
+    }
+}
 
-        function openModal() {
-            document.getElementById('modalOverlay').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+function updateDateInput() {
+    if (selectedDate) {
+        const day = selectedDate.getDate().toString().padStart(2, '0');
+        const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+        const year = selectedDate.getFullYear();
+        document.getElementById('dateInput').value = `${day}/${month}/${year}`;
+    }
+}
+
+function initTimePicker() {
+    createHourPicker();
+    createMinutePicker();
+    createPeriodPicker();
+    updateTimeDisplay();
+}
+
+function createHourPicker() {
+    const hourPicker = document.getElementById('hourPicker');
+    if (!hourPicker) return; 
+    
+    hourPicker.innerHTML = '';
+    
+    hourPicker.innerHTML += '<div class="picker-item" style="height: 50px;"></div>';
+    
+    for (let i = 1; i <= 12; i++) {
+        const item = document.createElement('div');
+        item.className = `picker-item ${i === selectedTime.hour ? 'selected' : 'inactive'}`;
+        item.textContent = i;
+        item.addEventListener('click', () => selectHour(i));
+        hourPicker.appendChild(item);
+    }
+    
+    hourPicker.innerHTML += '<div class="picker-item" style="height: 50px;"></div>';
+    
+    setTimeout(() => {
+        const selectedIndex = selectedTime.hour - 1;
+        hourPicker.scrollTop = selectedIndex * 50;
+    }, 0);
+}
+
+function createMinutePicker() {
+    const minutePicker = document.getElementById('minutePicker');
+    if (!minutePicker) return; 
+    
+    minutePicker.innerHTML = '';
+    
+    minutePicker.innerHTML += '<div class="picker-item" style="height: 50px;"></div>';
+    
+    for (let i = 0; i <= 59; i++) {
+        const item = document.createElement('div');
+        const minute = i.toString().padStart(2, '0');
+        item.className = `picker-item ${i === selectedTime.minute ? 'selected' : 'inactive'}`;
+        item.textContent = minute;
+        item.addEventListener('click', () => selectMinute(i));
+        minutePicker.appendChild(item);
+    }
+    
+    minutePicker.innerHTML += '<div class="picker-item" style="height: 50px;"></div>';
+    
+    setTimeout(() => {
+        minutePicker.scrollTop = selectedTime.minute * 50;
+    }, 0);
+}
+
+function createPeriodPicker() {
+    const periodPicker = document.getElementById('periodPicker');
+    if (!periodPicker) return; 
+    
+    periodPicker.innerHTML = '';
+    
+    periodPicker.innerHTML += '<div class="picker-item" style="height: 50px;"></div>';
+    
+    ['AM', 'PM'].forEach(period => {
+        const item = document.createElement('div');
+        item.className = `picker-item ${period === selectedTime.period ? 'selected' : 'inactive'}`;
+        item.textContent = period;
+        item.addEventListener('click', () => selectPeriod(period));
+        periodPicker.appendChild(item);
+    });
+    
+    periodPicker.innerHTML += '<div class="picker-item" style="height: 50px;"></div>';
+    
+    setTimeout(() => {
+        const selectedIndex = selectedTime.period === 'AM' ? 0 : 1;
+        periodPicker.scrollTop = selectedIndex * 50;
+    }, 0);
+}
+
+function selectHour(hour) {
+    selectedTime.hour = hour;
+    updateHourDisplay();
+    updateTimeDisplay();
+}
+
+function selectMinute(minute) {
+    selectedTime.minute = minute;
+    updateMinuteDisplay();
+    updateTimeDisplay();
+}
+
+function selectPeriod(period) {
+    selectedTime.period = period;
+    updatePeriodDisplay();
+    updateTimeDisplay();
+}
+
+function updateHourDisplay() {
+    const hourPicker = document.getElementById('hourPicker');
+    if (!hourPicker) return;
+    
+    const items = hourPicker.querySelectorAll('.picker-item');
+    items.forEach((item, index) => {
+        if (index === 0 || index === items.length - 1) return; 
+        const hour = parseInt(item.textContent);
+        if (hour === selectedTime.hour) {
+            item.className = 'picker-item selected';
+        } else {
+            item.className = 'picker-item inactive';
         }
+    });
+}
 
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.add('hidden');
-            document.body.style.overflow = 'auto';
+function updateMinuteDisplay() {
+    const minutePicker = document.getElementById('minutePicker');
+    if (!minutePicker) return;
+    
+    const items = minutePicker.querySelectorAll('.picker-item');
+    items.forEach((item, index) => {
+        if (index === 0 || index === items.length - 1) return; 
+        const minute = parseInt(item.textContent);
+        if (minute === selectedTime.minute) {
+            item.className = 'picker-item selected';
+        } else {
+            item.className = 'picker-item inactive';
         }
+    });
+}
 
-        // Close modal when clicking outside of it
-        document.getElementById('modalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
+function updatePeriodDisplay() {
+    const periodPicker = document.getElementById('periodPicker');
+    if (!periodPicker) return;
+    
+    const items = periodPicker.querySelectorAll('.picker-item');
+    items.forEach((item, index) => {
+        if (index === 0 || index === items.length - 1) return;
+        if (item.textContent === selectedTime.period) {
+            item.className = 'picker-item selected';
+        } else {
+            item.className = 'picker-item inactive';
+        }
+    });
+}
+
+function updateTimeDisplay() {
+    const timeDisplay = document.getElementById('timeDisplay');
+    if (!timeDisplay) return;
+    
+    const minute = selectedTime.minute.toString().padStart(2, '0');
+    timeDisplay.textContent = `${selectedTime.hour}:${minute} ${selectedTime.period}`;
+}
+
+function updateTimePicker() {
+    // Only initialize if the elements exist
+    if (document.getElementById('hourPicker')) {
+        initTimePicker();
+        addScrollListeners();
+    }
+}
+
+
+function addScrollListeners() {
+    const hourPicker = document.getElementById('hourPicker');
+    const minutePicker = document.getElementById('minutePicker');
+    const periodPicker = document.getElementById('periodPicker');
+
+    if (!hourPicker || !minutePicker || !periodPicker) return;
+
+    let hourScrollTimeout, minuteScrollTimeout, periodScrollTimeout;
+
+    hourPicker.addEventListener('scroll', () => {
+        clearTimeout(hourScrollTimeout);
+        hourScrollTimeout = setTimeout(() => {
+            const scrollTop = hourPicker.scrollTop;
+            const itemIndex = Math.round(scrollTop / 50);
+            const hour = itemIndex + 1;
+            if (hour >= 1 && hour <= 12 && hour !== selectedTime.hour) {
+                selectHour(hour);
             }
-        });
+        }, 150);
+    });
 
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
+    minutePicker.addEventListener('scroll', () => {
+        clearTimeout(minuteScrollTimeout);
+        minuteScrollTimeout = setTimeout(() => {
+            const scrollTop = minutePicker.scrollTop;
+            const minute = Math.round(scrollTop / 50);
+            if (minute >= 0 && minute <= 59 && minute !== selectedTime.minute) {
+                selectMinute(minute);
             }
-        });z
+        }, 150);
+    });
 
-       
+    periodPicker.addEventListener('scroll', () => {
+        clearTimeout(periodScrollTimeout);
+        periodScrollTimeout = setTimeout(() => {
+            const scrollTop = periodPicker.scrollTop;
+            const periodIndex = Math.round(scrollTop / 50);
+            const period = periodIndex === 0 ? 'AM' : 'PM';
+            if (period !== selectedTime.period) {
+                selectPeriod(period);
+            }
+        }, 150);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateTimePicker();
+});
+
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+        modalOverlay.classList.add('hidden');
+    }
+});
+
+hospitalModal.addEventListener('click', (e) => {
+    if (e.target === hospitalModal) {
+        hospitalModal.classList.add('hidden');
+        hospitalModal.classList.remove('flex');
+    }
+});
+
+scheduleModal.addEventListener('click', (e) => {
+    if (e.target === scheduleModal) {
+        scheduleModal.classList.add('hidden');
+        scheduleModal.classList.remove('flex');
+        resetScheduleModal();
+    }
+});
+
+confirmationModal.addEventListener('click', (e) => {
+    if (e.target === confirmationModal) {
+        confirmationModal.classList.add('hidden');
+        confirmationModal.classList.remove('flex');
+        resetScheduleModal();
+    }
+});
+
+updateCalendar();

@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="lib/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        body{
+            font-family: "Inter", sans-serif;
+        }
         .hospital-gallery {
         width: 100%;
         overflow: hidden;
@@ -82,7 +85,7 @@
         animation-play-state: paused;
         }
 
-        #modal-overlay {
+        /* #modal-overlay {
             scroll-behavior: smooth;
         }
 
@@ -111,7 +114,7 @@
         #form input:focus, #form select:focus {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
-        }
+        } */
 
         .carousel-container {
             overflow: hidden;
@@ -130,28 +133,117 @@
             scroll-behavior: smooth;
         }
 
-        .modal-backdrop {
-            backdrop-filter: blur(4px);
-            background-color: rgba(0, 0, 0, 0.5);
+        .modal-overlay, .modal-backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
         }
         
-        .loading-pulse {
-            animation: pulse 2s infinite;
+        .calendar-day {
+            transition: all 0.2s;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .calendar-day:hover {
+            background-color: #e5e7eb;
+            transform: scale(1.05);
         }
         
+        .calendar-day.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+
+        .picker-container {
+            height: 150px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .picker-container::-webkit-scrollbar {
+            display: none;
+        }
+        .picker-item {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .picker-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .picker-item.selected {
+            font-weight: bold;
+            font-size: 1.125rem;
+            color: #1f2937;
+        }
+        .picker-item.inactive {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+        
+        .time-picker-container {
+            background: #f8f9fa;
+        }
+        
+        .time-scroll {
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        
+        .time-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .time-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .time-scroll::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
         .location-pin {
             animation: bounce 2s infinite;
         }
-        
+
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        #dot1, #dot2, #dot3 {
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        #dot2 {
+            animation-delay: 0.2s;
+        }
+
+        #dot3 {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
         }
 
 
@@ -241,8 +333,8 @@
 
                         <div class="flex items-center gap-[40px] hidden sm:ml-6 sm:block">
                             <a href="signup.html" class="text-lg font-light text-white hover:text-[#E63946]">Sign Up</a>
-                            <a href="#" onclick="openForm()">
-                                <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-1 px-4 rounded-md ml-10">Donate Now</button>
+                            <a href="#">
+                                <button id="startProcessBtn" class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-1 px-4 rounded-md ml-10">Donate Now</button>
                             </a>
                         </div>
                     </div>
@@ -253,8 +345,8 @@
                     <div class="space-y-1 px-2 pb-3 pt-2">
                         <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
                             <a href="signup.html" class="w-full text-center text-lg font-light text-white hover:text-[#E63946] transition-colors duration-200">Sign Up</a>
-                            <a href="#" onclick="openForm()" class="w-full">
-                                <button class="w-full text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md transition-colors duration-200">Donate Now</button>
+                            <a href="#" class="w-full">
+                                <button id="processBtn" class="w-full text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md transition-colors duration-200">Donate Now</button>
                             </a>
                         </div>
                     </div>
@@ -275,8 +367,8 @@
                 
                 <!-- Buttons - hidden on mobile, shown on desktop -->
                 <div class="hidden lg:flex mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-[45px] flex-col sm:flex-row">                    
-                    <a href="#" onclick="openForm()">                        
-                        <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 md:p-2 px-6 md:px-6 rounded-md transition-colors duration-200">Donate Now</button>                    
+                    <a href="#">                        
+                        <button id="startBtn" class="w-full sm:w-auto text-base md:text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-3 md:p-2 px-6 md:px-6 rounded-md transition-colors duration-200">Donate Now</button>                    
                     </a>                    
                     <a href="signin.html" class="w-full sm:w-auto">                        
                         <button class="w-full sm:w-auto text-base md:text-lg font-semibold text-white p-3 md:p-2 px-8 md:px-12 rounded-lg outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
@@ -298,8 +390,8 @@
             <!-- Mobile buttons - shows after image on mobile only -->
             <div class="lg:hidden w-full order-3 px-4 mb-8">
                 <div class="flex flex-col gap-4">                    
-                    <a href="#" onclick="openForm()" class="w-full">                        
-                        <button class="w-full text-base font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-4 rounded-full transition-colors duration-200">Donate Now</button>                    
+                    <a href="#" class="w-full">                        
+                        <button id="starterBtn" class="w-full text-base font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-4 rounded-full transition-colors duration-200">Donate Now</button>                    
                     </a>                    
                     <a href="signin.html" class="w-full">                        
                         <button class="w-full text-base font-semibold text-white p-4 rounded-full outline-white outline-1 outline hover:bg-white hover:text-gray-900 transition-colors duration-200">Sign In</button>                    
@@ -383,12 +475,11 @@
     </div>
 
 
+    
     <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">        
-        <!-- Donate Form Container -->        
         <div id="form" class="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 my-8 relative max-h-[90vh] overflow-y-auto">
-            <!-- Sticky Header -->
             <div class="sticky top-0 bg-white rounded-t-lg p-6 pb-4 border-b border-gray-100 z-10">
-                <button onclick="closeForm()" class="absolute top-4 right-4 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-400 transition-colors">                
+                <button id="closeForm" class="absolute top-4 right-4 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-400 transition-colors">                
                     <span class="text-lg font-bold">×</span>            
                 </button>                               
                 <div class="pr-8">                
@@ -397,24 +488,23 @@
                 </div>
             </div>
             
-            <!-- Scrollable Content -->
             <div class="p-6 pt-4">                                 
                 <form class="space-y-4">                
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Full Name <span class="text-red-500">*</span></div>                    
-                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input type="text" id="fullName" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                                 
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Phone Number <span class="text-red-500">*</span></div>                    
-                        <input type="number" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input type="number" id="phoneNumber" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                             
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Email Address <span class="text-red-500">*</span></div>                    
-                        <input type="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input type="email" id="emailAddress" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                           
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Blood Group <span class="text-red-500">*</span></div>                    
-                        <select class="border border-gray-300 rounded px-3 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                        <select id="bloodGroup" class="w-full border border-gray-300 rounded px-3 py-3 focus:outline-none focus:border-transparent bg-gray-50 transition-all">
                             <option value="">Select</option>
                             <option value="A+">A+</option>
                             <option value="A-">A-</option>
@@ -428,11 +518,11 @@
                     </div>                                           
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Location / Address</div>                    
-                        <input id="locationInput" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input id="locationInput" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                           
                     <div>                    
                         <div class="text-gray-600 text-sm mb-2">Nearest Landmark</div>                    
-                        <input id="landmarkInput" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-50 transition-all">                
+                        <input id="landmarkInput" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-transparent bg-gray-50 transition-all">                
                     </div>                                           
                     <div class="pt-2">                    
                         <div class="text-gray-600 text-sm mb-3">Gender</div>                    
@@ -456,7 +546,7 @@
                                 <input 
                                     type="checkbox" 
                                     id="notification-checkbox"
-                                    class="w-5 h-5 border-gray-300 accent-black rounded focus:ring-2"
+                                    class="w-5 h-5 border-gray-300 accent-black rounded"
                                 >
                             </div>
                             <label for="notification-checkbox" class="text-gray-700 text-base leading-relaxed cursor-pointer">
@@ -464,7 +554,7 @@
                             </label>
                         </div>
                     </div>                                           
-                    <button type="button" onclick="findHospitals()" class="w-full bg-red-500 text-white text-lg py-3 rounded font-bold hover:bg-red-600 transition-colors mt-6">                    
+                    <button type="button" id="findHospitalsBtn" class="w-full bg-red-500 text-white text-lg py-3 rounded font-bold hover:bg-red-600 transition-colors mt-6">                    
                         Find Hospitals Near Me                
                     </button>                                           
                     <p class="text-gray-500 text-md text-center mt-4 leading-relaxed">                    
@@ -475,6 +565,7 @@
         </div>    
     </div>
 
+    <!-- Modal 2: Hospital Loading and Results -->
     <div id="hospitalModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
             
@@ -484,9 +575,7 @@
                 <!-- Location Pin Icon -->
                 <div class="location-pin mb-8">
                     <svg width="60" height="60" viewBox="0 0 60 80" class="drop-shadow-md">
-                        <!-- Main pin body -->
                         <path d="M30 0C13.5 0 0 13.5 0 30C0 52.5 30 80 30 80S60 52.5 60 30C60 13.5 46.5 0 30 0Z" fill="#EF4444"/>
-                        <!-- Inner circle -->
                         <circle cx="30" cy="30" r="12" fill="white" opacity="0.9"/>
                         <circle cx="30" cy="30" r="8" fill="#EF4444" opacity="0.7"/>
                     </svg>
@@ -511,7 +600,7 @@
 
                 <!-- Close button -->
                 <button 
-                    onclick="closeModal()" 
+                    id="closeHospitalModal" 
                     class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -522,39 +611,30 @@
 
             <!-- Hospital Results Screen -->
             <div id="resultsScreen" class="hidden">
-                <div class="relative h-80 bg-gradient-to-br from-green-100 via-blue-50 to-green-200 overflow-hidden">
+                <div class="relative h-48 bg-gray-200">
+                    <div class="relative">
+                        <img src="./assets/images/Image.png" alt="">
+                        <img class=" w-24 h-24 absolute top-[85px] left-[70px]" src="./assets/images/image 3.svg" alt="">
+                        <img class=" w-24 h-24 inset-0 absolute top-[120px] left-[110px]" src="./assets/images/Group 153.svg" alt="">
+                        <img src="./assets/images/fluent-mdl2_feedback-request-solid.svg" alt="">
+                   </div>
+                    
+                    <!-- Close button -->
                     <button 
-                        onclick="closeModal()" 
-                        class="absolute top-4 right-4 z-20 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-700 transition-colors"
+                        id="closeResultsModal"
+                        class="absolute top-2 right-2 w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center text-gray-600 hover:bg-opacity-100 transition-all"
                     >
-                        <span class="text-sm font-bold">×</span>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
                     </button>
-
-                    <svg id="mapSvg" class="absolute inset-0 w-full h-full" viewBox="0 0 400 300">
-                    </svg>
-
-                    <!-- Main Hospital Pin -->
-                    <div id="hospitalPin" class="absolute top-20 left-32 transform -translate-x-1/2">
-                        <div class="relative">
-                            <div class="absolute top-12 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-black opacity-20 rounded-full blur-sm"></div>
-                            <svg width="50" height="65" viewBox="0 0 50 65" class="drop-shadow-lg">
-                                <path d="M25 0C11.2 0 0 11.2 0 25C0 43.8 25 65 25 65S50 43.8 50 25C50 11.2 38.8 0 25 0Z" fill="#EF4444"/>
-                                <circle cx="25" cy="25" r="10" fill="white" opacity="0.9"/>
-                                <circle cx="25" cy="25" r="6" fill="#EF4444" opacity="0.8"/>
-                            </svg>
-                            <div id="hospitalInfo" class="absolute -top-2 left-16 bg-white p-2 rounded shadow-lg border text-xs whitespace-nowrap">
-                                <div id="hospitalName" class="font-semibold text-gray-800">National Hospital Abuja</div>
-                                <div id="hospitalCode" class="text-gray-600">PMB 425</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Hospital Details -->
-                <div class="p-6 bg-white">
-                    <h2 id="hospitalTitle" class="text-2xl font-bold text-gray-800 mb-2">National Hospital Abuja</h2>
-                    <p id="hospitalAddress1" class="text-gray-600 mb-1">PMB 425 Ali Muhammad Zarah Street, Central Business Dis, Abuja 900103,</p>
-                    <p id="hospitalAddress2" class="text-gray-600 mb-4">Federal Capital Territory</p>
+                <div class="p-8 bg-white">
+                    <h2 id="hospitalTitle" class="text-2xl font-bold text-lg text-gray-800 mt-16 mb-2">National Hospital Abuja</h2>
+                    <p id="hospitalAddress1" class="text-gray-600 text-sm mt-4 mb-3">PMB 425 Ali Muhammad Zarah Street, Central Business Dis, Abuja 900103,</p>
+                    <p id="hospitalAddress2" class="text-gray-600 text-sm mb-4">Federal Capital Territory</p>
                     
                     <div class="flex items-center text-gray-700 mb-6">
                         <svg width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 16 16">
@@ -576,16 +656,118 @@
             </div>
         </div>
     </div>
-   
 
+    <!-- Modal 3: Schedule Donation Appointment (renamed ID) -->
+    <div id="scheduleModal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md relative">
+            <!-- Close Button -->
+            <button id="closeScheduleModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
 
+            <!-- Modal Content -->
+            <div class="p-6">
+                <!-- Header -->
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-red-500 mb-2">Schedule Your Donation</h2>
+                    <p class="text-gray-600 text-sm">Book a time to donate at National Hospital Abuja</p>
+                </div>
 
+                <!-- Date Selection Step -->
+                <div id="dateStep" class="step">
+                    <h3 class="text-lg font-medium text-gray-700 mb-4">Select Date of Appointment</h3>
+                    
+                    <!-- Date Input -->
+                    <div class="mb-4">
+                        <input type="text" id="dateInput" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" 
+                            placeholder="01/01/2025" readonly>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <!-- Calendar Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <button id="prevMonth" class="p-1 hover:bg-gray-100 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <h4 id="monthYear" class="font-medium text-gray-700">June 2024</h4>
+                            <button id="nextMonth" class="p-1 hover:bg-gray-100 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Calendar Grid -->
+                        <div class="grid grid-cols-7 gap-1 text-center text-sm">
+                            <div class="font-medium text-gray-500 p-2">Sun</div>
+                            <div class="font-medium text-gray-500 p-2">Mon</div>
+                            <div class="font-medium text-gray-500 p-2">Tue</div>
+                            <div class="font-medium text-gray-500 p-2">Wed</div>
+                            <div class="font-medium text-gray-500 p-2">Thu</div>
+                            <div class="font-medium text-gray-500 p-2">Fri</div>
+                            <div class="font-medium text-gray-500 p-2">Sat</div>
+                            <div id="calendarDays" class="col-span-7 grid grid-cols-7 gap-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Selection Step -->
+                <div id="timeStep" class="step hidden">
+                    <h3 class="text-lg font-medium text-gray-700 mb-4">Select Time of Appointment</h3>
+                        
+                    <div id="timeDisplay" class="text-xl font-bold mb-6 p-4 bg-white border-2 border-gray-200 rounded-lg">
+                       12:00 AM
+                    </div>
+
+                    <!-- Time Picker -->
+                    <div class="flex justify-between gap-4">
+                        <!-- Hour Picker -->
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-2 text-center">Hour</label>
+                            <div id="hourPicker" class="picker-container rounded-lg"></div>
+                        </div>
+
+                        <!-- Minute Picker -->
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-2 text-center">Minute</label>
+                            <div id="minutePicker" class="picker-container rounded-lg"></div>
+                        </div>
+
+                        <!-- Period Picker -->
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-2 text-center">Period</label>
+                            <div id="periodPicker" class="picker-container rounded-lg "></div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Button -->
+                    <button id="confirmAppointment" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                        Confirm Appointment
+                    </button>
+                        
+                </div>
+                <!-- Back Button (shown on time step) -->
+                <div id="backButton" class="hidden mt-4 text-center">
+                    <button id="backToDate" class="text-gray-500 hover:text-gray-700 text-sm">
+                        ← Back to date selection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Final Confirmation -->
     <div id="confirmationModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 overflow-hidden relative">
             
             <!-- Close button -->
             <button 
-                onclick="closeConfirmationModal()" 
+                id="closeConfirmationModal" 
                 class="absolute top-4 right-4 z-20 text-gray-500 hover:text-gray-700 transition-colors"
             >
                 <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -595,9 +777,9 @@
 
             <!-- Content -->
             <div class="p-8 text-center">
-                <!-- Calendar Icon with red background -->
+                <!-- Calendar Icon -->
                 <div class="mx-auto mb-6 w-16 h-16 flex items-center justify-center">
-                    <img src="./assets/images/ant-design_schedule-filled.svg" alt="">
+                    <img class="w-16 h-16" src="./assets/images/ant-design_schedule-filled.svg" alt="">
                 </div>
 
                 <!-- Main heading -->
@@ -607,7 +789,7 @@
 
                 <!-- Subtext -->
                 <p class="text-gray-600 text-sm mb-8 font-semibold leading-relaxed italic">
-                    Thank you for your appointment request. We will send you<br>
+                    Thank you for your appointment request. We will send you
                     an email notification shortly to confirm your request.
                 </p>
 
@@ -615,19 +797,30 @@
                 <div class="space-y-4 mb-8 text-left">
                     <!-- Time -->
                     <div class="flex items-center text-gray-700">
-                       <img src="./assets/images/mingcute_time-line.svg" alt="">
+                        <svg width="20" height="20" class="mr-3" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#6B7280" stroke-width="2"/>
+                            <path d="M12 6v6l4 2" stroke="#6B7280" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
                         <span id="confirmationTime" class="text-sm font-medium">10:00 AM</span>
                     </div>
 
                     <!-- Date -->
                     <div class="flex items-center text-gray-700">
-                       <img src="./assets/images/bx_calendar.svg" alt="">
+                        <svg width="20" height="20" class="mr-3" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="#6B7280" stroke-width="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="#6B7280" stroke-width="2"/>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="#6B7280" stroke-width="2"/>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="#6B7280" stroke-width="2"/>
+                        </svg>
                         <span id="confirmationDate" class="text-sm font-medium">August 2nd, 2025</span>
                     </div>
 
                     <!-- Location -->
                     <div class="flex items-start text-gray-700">
-                        <img src="./assets/images/lsicon_location-outline.svg" alt="">
+                        <svg width="20" height="20" class="mr-3 mt-0.5" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="#6B7280" stroke-width="2"/>
+                            <circle cx="12" cy="10" r="3" stroke="#6B7280" stroke-width="2"/>
+                        </svg>
                         <div class="text-sm">
                             <div class="font-medium">National Hospital Abuja, PMB 425 Ali</div>
                             <div class="text-gray-600">Muhammad Zarah Street, Central Business</div>
@@ -636,15 +829,12 @@
                     </div>
                 </div>
 
-                <button class="w-full bg-[#E63946] hover:bg-[#802027] text-white font-semibold py-4 rounded-lg text-lg transition-colors">
+                <button id="goToMail" class="w-full bg-[#E63946] hover:bg-[#802027] text-white font-semibold py-4 rounded-lg text-lg transition-colors">
                     Go to mail
                 </button>
             </div>
         </div>
     </div>
-
-
-
 
 
 
@@ -654,8 +844,8 @@
             <p class="text-base md:text-lg lg:text-lg leading-relaxed md:leading-relaxed lg:leading-relaxed max-w-none md:max-w-prose text-center md:text-left">Every two seconds, someone in need requires blood. Your decision to donate could be the difference between life and loss. Whether it's a mother in surgery, a child with anemia, or an accident victim you can be their lifeline.
             Join a community of life-savers and make a lasting impact on your time, and in your city.</p>
             <div class="flex justify-center md:justify-start">
-                <a href="#" onclick="openForm()">
-                    <button class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md items-center mt-8 transition-colors duration-200 hidden md:grid">Donate Now</button>
+                <a href="#">
+                    <button id="lifeBtn" class="text-lg font-semibold text-white bg-[#E63946] hover:bg-[#802027] p-2 px-4 rounded-md items-center mt-8 transition-colors duration-200 hidden md:grid">Donate Now</button>
                 </a>
             </div>
         </div>
@@ -899,7 +1089,7 @@
                 </div> 
                 <div class="border border-[1px] border-[#a8a8a8] mx-auto lg:mx-0 max-w-xs lg:max-w-none mt-4"></div> 
                 <div class="flex justify-between">
-                    <p class="text-[#212B36] mt-5 font-medium">Q3: Can I request blood for someone else?</p>
+                    <p class="text-[#212B36] text-base text-start mt-5 font-medium">Q3: Can I request blood for someone else?</p>
                     <img class="w-4" src="./assets/images/Frame 1124.svg" alt="">
                 </div>      
                 <div class="border border-[1px] border-[#a8a8a8] mx-auto lg:mx-0 max-w-xs lg:max-w-none mt-4"></div> 
@@ -971,7 +1161,7 @@
         </div>
 
         <!-- Footer Bottom -->
-        <div class="pt-5 hidden lg:flex justify-center items-center gap-32 text-base">
+        <div class="pt-5 hidden xl:flex justify-center items-center gap-32 text-base">
             <div>
                 <span>© LifeFlow 2025, All Rights Reserved</span>
             </div>

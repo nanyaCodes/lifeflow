@@ -12,8 +12,1097 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            height: 640px;
+            background-color: white;
+        }
+        p,h1,h2,h3,h4,h5,h6{
+            font-family: "Inter", sans-serif;
+        }
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-item.active {
+            background-color: #E63946;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 </head>
+
 <body>
-    
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-[#1D3557] h-[640px] text-white flex flex-col">
+            <div class="p-4 flex items-center space-x-3">
+                <div>
+                    <img src="./assets/logo/logo.svg" alt="">
+                </div>
+            </div>
+
+            <!-- Navigation --> 
+            <nav class="flex-1 px-4 py-6">
+                <div class="space-y-2">
+                    <a href="#" id="dashboard-nav" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg">
+                       <img class="w-5 h-5" src="./assets/images/mingcute_home-1-fill.svg" alt="">
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="#" id="post-request-nav" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg">
+                        <img class="w-5 h-5" src="./assets/images/fluent-mdl2_feedback-request-solid.svg" alt="">
+                        <span>Post Request</span>
+                    </a>
+                    
+                    <a href="#" id="matched-donors-nav" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg">
+                        <img class="w-5 h-5" src="./assets/images/Vector.svg" alt="">
+                        <span>Matched Donors</span>
+                    </a>
+                    
+                    <a href="#" id="request-history-nav" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg">
+                        <img class="w-5 h-5" src="./assets/images/iconamoon_history-bold.svg" alt="">
+                        <span>Request History</span>
+                    </a>
+                    
+                    <a href="#" id="account-nav" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg">
+                        <img class="w-5 h-5" src="./assets/images/Vector (1).svg" alt="">
+                        <span>Account</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Logout -->
+            <div class="p-4">
+                <button id="logoutBtn" class="w-full bg-[#E63946] hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200">
+                    Log out
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-[#1D3557] text-white p-4 flex items-center justify-between">
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-[600px] mx-4">
+                    <div class="relative">
+                        <input type="text" class="w-full px-4 py-2 rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Hospital Info -->
+                <div class="flex items-center space-x-6  mr-20">
+                    <div class="w-8 h-8 flex items-center justify-center relative">
+                        <div class="w-3 h-3 absolute -top-1 -right-1"></div>
+                        <img class="w-7 h-7" src="./assets/images/streamline_notification-alarm-2-remix.svg" alt="">
+                    </div>
+                    <span class="font-semibold text-xl leading-tight">National Hospital Abuja</span>
+                    <div class="w-10 h-10 flex items-center justify-center">
+                       <img class="rounded-full" src="./assets/images/hospital-2.svg" alt="">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Page Title and Action Button -->
+                <div id="dashboard-header"  class="flex items-center justify-between mb-6">
+                    <h1 id="page-title"  class="text-3xl font-bold text-[#1D3557]">Dashboard</h1>   
+                    <button  id="post-new-request-btn" class=" relative bg-[#E63946] hover:bg-[#802027] text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
+                        Post New Request
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div id="dashboard-stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Active Blood Requests -->
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all duration-200">
+                        <div class="text-center ">
+                            <div class="text-4xl font-bold text-[#1D3557] mb-2">1</div>
+                            <div class="text-[#1D3557] text-2xl font-semibold mb-3">Active Blood <br> Requests</div>
+                            <div class="flex text-start justify-center text-sm text-[#1D3557] mt-4">
+                                <img class="w-4 h-4 mr-2 mb-4" src="./assets/images/icomoon-free_notification.svg" alt="">
+                                <span>Request for blood from hospitals that hasn't been fulfilled.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Matched Donors -->
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all duration-200">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-[#1D3557] mb-2 mr-6">0</div>
+                            <div class="text-[#1D3557] text-2xl font-semibold mb-3 mr-6">Matched <br> Donors</div>
+                            <div class="flex text-start justify-center text-sm text-[#1D3557]">
+                                <img class="w-4 h-4 mr-2 mb-8" src="./assets/images/icomoon-free_notification.svg" alt="">
+                                <span>Donors who fit the blood type & location criteria but haven't scheduled yet.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Donations -->
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all duration-200">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-[#1D3557] mb-2">3</div>
+                            <div class="text-[#1D3557] text-2xl font-semibold mb-3">Pending <br> Donations</div>
+                            <div class="flex text-start justify-center text-sm text-[#1D3557]">
+                                <img class="w-4 h-4 mr-2 mb-8" src="./assets/images/icomoon-free_notification.svg" alt="">
+                                <span>Matched donors who have scheduled an appointment but haven't donated yet.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Successful Donations -->
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all duration-200">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-[#1D3557] mb-2">5</div>
+                            <div class="text-[#1D3557] text-2xl font-semibold mb-3">Successful <br> Donations</div>
+                            <div class="flex text-start justify-center text-sm text-[#1D3557]">
+                                <img class="w-4 h-4 mr-2 mb-8" src="./assets/images/icomoon-free_notification.svg" alt="">
+                                <span>Donors who have completed their appointment and donated blood.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div id="dashboard-content" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Column - Appointments and History -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Upcoming Appointments -->
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 bg-gray-50 border-b">
+                                <h2 class="text-xl font-bold text-[#1D3557]">Upcoming Appointments</h2>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-[#E63946] text-white">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left font-semibold">Donor</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Date</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Time</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Blood Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-[#1D3557]">James Paul Adeshina</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">12-07-2025</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">10 AM</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">B+</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-[#1D3557]">Tamara Tomike Oluwole</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">16-07-2025</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">2 PM</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">O-</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-[#1D3557]">Justine Raymond Ojo</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">30-08-2025</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">11:30AM</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">B-</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Request History -->
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 bg-gray-50 border-b">
+                                <h2 class="text-xl font-bold text-[#1D3557]">Request History</h2>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-[#E63946] text-white">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left font-semibold">Request ID</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Blood Type</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Quantity</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Date Request</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Status</th>
+                                            <th class="px-6 py-3 text-left font-semibold">Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-[#1D3557]">004120</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">B+</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-[#1D3557]">3 pints</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">30-06-2025</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-blue-500 rounded-full text-sm font-medium">Pending</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button class="hover:text-red-800">
+                                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-gray-700">021493</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">A+</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-[#1D3557]">2 pints</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">04-05-2025</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-green-700 rounded-full text-sm font-medium">Completed</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button class="hover:text-red-800">
+                                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-gray-700">648245</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">A+</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-[#1D3557]">3 pints</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">04-04-2025</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-green-700 rounded-full text-sm font-medium">Completed</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button class="hover:text-red-800">
+                                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-[#1D3557]">430874</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-[#1D3557] rounded-full text-sm font-medium">O+</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-[#1D3557]">4 pints</td>
+                                            <td class="px-6 py-4 text-[#1D3557]">02-01-2025</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-3 py-1 text-red-800 rounded-full text-sm font-medium">Cancelled</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button class="hover:text-red-800">
+                                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Notifications -->
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 bg-gray-50 border-1 border">
+                                <h2 class="text-xl font-bold text-[#1D3557]">Notifications</h2>
+                                <div class="p-6">
+                                    <div class="flex items-center space-x-3 p-4 rounded-lg">
+                                        <img class="w-3 h-3" src="./assets/images/icomoon-free_notification.svg" alt="">
+                                        <span class="text-[#1D3557]">A donor match is available near you</span>
+                                    </div>
+                               </div>
+                            </div>
+                           
+                        </div>
+
+                        <!-- Hospital Profile -->
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 bg-gray-50 border-1 border">
+                                <h2 class="text-xl font-bold text-[#1D3557]">Hospital Profile</h2>
+                                <div class="p-6">
+                                    <div class="flex items-center space-x-4 mb-4">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-lg flex items-center justify-center">
+                                            <img src="./assets/images/hospital-2.svg" alt="">
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-[#1D3557]">National Hospital Abuja</div>
+                                            <div class="text-[#1D3557]">08111111111</div>
+                                            <a href="#" class="text-[#E63946] text-sm underline">Edit Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <!-- Donor Matches -->
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="px-6 py-4 bg-gray-50 border-1 border">
+                                <h2 class="text-xl font-bold text-[#1D3557]">Donor Matches</h2>
+                                <div class="p-6">
+                                    <div class="text-center text-[#1D3557]">
+                                        <div class="mb-2">No donor matches yet. New matches will</div>
+                                        <div>appear here once you post a request.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <div id="post-request-form" class="hidden">
+        <div class="w-[550px] mx-auto absolute top-[90px] left-[450px]">
+            <div class="bg-white rounded-xl shadow-md p-6 px-24">
+                <h2 class="text-3xl font-bold text-[#1D3557] mb-8 mt-4">Post a Blood Request</h2>
+                
+                <form class="space-y-6">
+                    <!-- Blood Type Needed -->
+                    <div>
+                        <label class="block text-[#1D3557] font-medium mb-3">Blood Type Needed</label>
+                        <div class="relative">
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none bg-white">
+                                <option value="">Select</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quantity -->
+                    <div>
+                        <label class="block text-gray-600 font-medium mb-3">Quantity (in pints)</label>
+                        <input type="number" min="1" max="10" class="w-full px-4 py-3 border border-gray-300 rounded-lg " placeholder="Enter quantity">
+                    </div>
+
+                    <!-- Urgency Level -->
+                    <div>
+                        <label class="block text-gray-600 font-medium mb-3">Urgency Level</label>
+                        <div class="flex space-x-6">
+                            <label class="flex items-center">
+                                <input type="radio" name="urgency" value="low" class="text-red-500 accent-red-500 focus:ring-red-500">
+                                <span class="ml-2 text-gray-700">Low</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="urgency" value="moderate" class="text-red-500 accent-red-500 focus:ring-red-500" checked>
+                                <span class="ml-2 text-gray-700">Moderate</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="urgency" value="high" class=" accent-red-500 text-red-500 focus:ring-red-500">
+                                <span class="ml-2 text-gray-700">High</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="urgency" value="critical" class="text-red-500 accent-red-500 focus:ring-red-500">
+                                <span class="ml-2 text-gray-700">Critical</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Additional Notes -->
+                    <div>
+                        <label class="block text-gray-600 font-medium mb-3">Additional Notes (Optional)</label>
+                        <textarea rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none" placeholder="Enter any additional information..."></textarea>
+                    </div>
+                    <div class="pt-4 mb-32">
+                        <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 text-lg">
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="matched-donors-page" class="hidden">
+        <!-- Stats Cards for Matched Donors -->
+       <div class="container mx-auto px-4 py-6 w-[1015px] absolute top-[80px] left-[220px]">
+            <!-- Stats Cards for Matched Donors -->
+
+            <div id="dashboard-header"  class="flex items-center justify-between mb-6">
+                <h1 id="page-title"  class="text-3xl font-bold text-[#1D3557]">Matched Donors</h1>   
+                <button  id="new-btn" class=" relative bg-[#E63946] hover:bg-[#802027] text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
+                    Post New Request
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white border-1 border border-gray-200 rounded-xl p-3 shadow-2xl card-hover transition-all duration-300">
+                    <div class="text-center p-10">
+                        <div class="text-3xl font-bold text-[#1D3557] mb-2">2</div>
+                        <div class="text-[#1D3557] font-medium text-xl">Total Matches</div>
+                    </div>
+                </div>
+                <div class="bg-white border-1 border border-gray-200 rounded-xl shadow-md p-3 card-hover transition-all duration-200">
+                    <div class="text-center p-10">
+                        <div class="text-3xl font-bold text-[#1D3557] mb-2">3</div>
+                        <div class="text-[#1D3557] font-medium text-xl">Scheduled</div>
+                    </div>
+                </div>
+                <div class="bg-white border-1 border border-gray-200 rounded-xl shadow-md p-3 card-hover transition-all duration-200">
+                    <div class="text-center p-10">
+                        <div class="text-3xl font-bold text-[#1D3557] mb-2">1</div>
+                        <div class="text-[#1D3557] font-medium text-xl">Canceled</div>
+                    </div>
+                </div>
+                <div class="bg-white border-1 border border-gray-200 rounded-xl shadow-md p-3 card-hover transition-all duration-200">
+                    <div class="text-center p-10">
+                        <div class="text-3xl font-bold text-[#1D3557] mb-2">0</div>
+                        <div class="text-[#1D3557] font-medium text-xl">Rescheduled</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donor List -->
+            <div class="bg-white rounded-2xl shadow-md pb-4 overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b">
+                    <h2 class="text-xl font-bold text-gray-800">Donor List</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-red-500 text-white">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold text-sm">Donor Name</th>
+                                <th class="px-4 py-3 text-left font-semibold text-sm">Blood Type</th>
+                                <th class="px-4 py-3 text-left font-semibold text-sm">Location</th>
+                                <th class="px-4 py-3 text-left font-semibold text-sm">Matched Date</th>
+                                <th class="px-4 py-3 text-left font-semibold text-sm">Status</th>
+                                <th class="px-4 py-3 text-left font-semibold text-sm">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">James Paul Adeshina</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-[#1D3557] rounded-full text-sm font-medium">B+</span>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">Abuja, Garki</td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">12-07-2025</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-green-500 rounded-full text-sm font-medium">Scheduled</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex space-x-3">
+                                        <button class="text-gray-600 hover:text-gray-800" title="View Profile">
+                                            <img class="w-6 h-6" src="./assets/images/Veiw Profile.svg" alt="">
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                            <img class="w-6 h-6" src="./assets/images/ix_cancel.svg" alt="">
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-800" title="Schedule">
+                                           <img class="w-6 h-6" src="./assets/images/Reschedule appointment.svg" alt="">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Tamara Tomike Oluwole</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-[#1D3557] rounded-full text-sm font-medium">O-</span>
+                                </td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Abuja, Garki</td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">16-07-2025</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-green-500 rounded-full text-sm font-medium">Scheduled</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex space-x-3">
+                                        <button class="text-gray-600 hover:text-gray-800" title="View Profile">
+                                            <img class="w-6 h-6" src="./assets/images/Veiw Profile.svg" alt="">
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                            <img class="w-6 h-6" src="./assets/images/ix_cancel.svg" alt="">
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-800" title="Schedule">
+                                           <img class="w-6 h-6" src="./assets/images/Reschedule appointment.svg" alt="">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Justine Raymond Ojo</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-[#1D3557] rounded-full text-sm font-medium">B-</span>
+                                </td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Abuja, Garki</td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">30-08-2025</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-green-500 rounded-full text-sm font-medium">Scheduled</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex space-x-3">
+                                        <button class="text-gray-600 hover:text-gray-800" title="View Profile">
+                                            <img class="w-6 h-6" src="./assets/images/Veiw Profile.svg" alt="">
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                            <img class="w-6 h-6" src="./assets/images/ix_cancel.svg" alt="">
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-800" title="Schedule">
+                                           <img class="w-6 h-6" src="./assets/images/Reschedule appointment.svg" alt="">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">David A. Johnson</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-[#1D3557] rounded-full text-sm font-medium">O+</span>
+                                </td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Abuja, Wuse II</td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">17-07-2025</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-yellow-600 rounded-full text-sm font-medium">Matched</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex space-x-3">
+                                        <button class="text-gray-600 hover:text-gray-800" title="View Profile">
+                                            <img class="w-6 h-6" src="./assets/images/Veiw Profile.svg" alt="">
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                            <img class="w-7 h-7" src="./assets/images/Schedule Appointment.svg" alt="">
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-800" title="Schedule">
+                                           <img class="w-6 h-6" src="./assets/images/Reschedule appointment.svg" alt="">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">John Arawat</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-[#1D3557] rounded-full text-sm font-medium">AB+</span>
+                                </td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Abuja, Wuse II</td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">17-07-2025</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-red-500 rounded-full text-sm font-medium">Canceled</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex space-x-3">
+                                        <button class="text-gray-600 hover:text-gray-800" title="View Profile">
+                                            <img class="w-6 h-6" src="./assets/images/Veiw Profile.svg" alt="">
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                            <img class="w-7 h-7" src="./assets/images/Schedule Appointment.svg" alt="">
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-800" title="Schedule">
+                                           <img class="w-6 h-6" src="./assets/images/Reschedule appointment.svg" alt="">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Clara Obina</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-[#1D3557] rounded-full text-sm font-medium">A+</span>
+                                </td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">Abuja, Maitama</td>
+                                <td class="px-4 py-3 text-[#1D3557] text-sm">17-07-2025</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-1 text-yellow-600 rounded-full text-sm font-medium">Matched</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex space-x-3">
+                                        <button class="text-gray-600 hover:text-gray-800" title="View Profile">
+                                            <img class="w-6 h-6" src="./assets/images/Veiw Profile.svg" alt="">
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                            <img class="w-7 h-7" src="./assets/images/Schedule Appointment.svg" alt="">
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-800" title="Schedule">
+                                           <img class="w-6 h-6" src="./assets/images/Reschedule appointment.svg" alt="">
+                                        </button>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="request-history-page" class="hidden">
+       <div class=" mx-auto px-4 py-6 w-[1015px] absolute top-[60px] left-[220px]">
+            <div class="flex items-center justify-between p-6 ">
+                <h1 class="text-3xl font-semibold text-[#1D3557]">Request History</h1>
+                <button id="history-btn" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors font-medium">
+                    Post New Request
+                </button>
+            </div>
+                        
+            <div class="overflow-x-auto border border-2 border-gray-100 rounded-2xl p-6">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-red-500 text-white">
+                            <th class="px-6 py-4 text-left font-medium">Request ID</th>
+                            <th class="px-6 py-4 text-left font-medium">Blood Type</th>
+                            <th class="px-6 py-4 text-left font-medium">Quantity</th>
+                            <th class="px-6 py-4 text-left font-medium">Date Request</th>
+                            <th class="px-6 py-4 text-left font-medium">Status</th>
+                            <th class="px-6 py-4 text-left font-medium">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">004120</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">B+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">3 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">30-06-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Pending</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">004120</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">B+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">3 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">30-06-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Pending</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">021493</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">A+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">2 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">04-05-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-green-500 px-3 py-1 rounded-full text-sm font-medium">Completed</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">648245</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">A+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">3 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">04-04-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-green-500 px-3 py-1 rounded-full text-sm font-medium">Completed</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">648245</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">A+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">3 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">04-04-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-green-500 px-3 py-1 rounded-full text-sm font-medium">Completed</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">430874</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">O+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">4 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">02-01-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-red-800 px-3 py-1 rounded-full text-sm font-medium">Cancelled</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-[#1D3557]">430874</td>
+                            <td class="px-6 py-4 font-medium text-[#1D3557]">O+</td>
+                            <td class="px-6 py-4 text-[#1D3557]">4 pints</td>
+                            <td class="px-6 py-4 text-[#1D3557]">02-01-2025</td>
+                            <td class="px-6 py-4">
+                                <span class="text-red-800 px-3 py-1 rounded-full text-sm font-medium">Cancelled</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="hover:text-red-800">
+                                    <img class="w-5 h-5" src="./assets/images/Group.svg" alt="">
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="account-page" class="hidden">
+        <div class="p-8 max-w-9xl mx-auto absolute top-[50px] left-[240px]">
+            <h1 class="text-3xl font-semibold text-[#1D3557] mb-8">Account Settings</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Profile Information Section -->
+                <div class="bg-white rounded-lg shadow-xl border border-gray-200 p-8">
+                    <h2 class="text-2xl font-semibold text-[#1D3557] mb-6">Profile Information</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-light text-[#000000] mb-2">Hospital Name</label>
+                            <input type="text" value="National Hospital Abuja" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-light text-[#000000] mb-2">Phone Number</label>
+                            <input type="text" value="08111111111" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-light text-[#000000] mb-2">Email Address</label>
+                            <input type="email" value="info@nationalhospital.ng" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-light text-[#000000] mb-2">Hospital Address</label>
+                                <input type="text" value="PMB 425 Ali Muhammad..." 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none ">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-light text-[#000000] mb-2">State</label>
+                                <input type="text" value="Abuja" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-light text-[#000000] mb-2">Hospital Registration ID</label>
+                            <input type="text" value="NHABJ00023" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none ">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="bg-red-500 hover:bg-red-600 text-white font-medium py-4 px-14 rounded-md transition-colors duration-200">
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="space-y-8">
+                    <!-- Security Section -->
+                    <div class="bg-white rounded-lg shadow-xl border border-gray-200 p-6">
+                        <h2 class="text-2xl font-semibold text-[#1D3557] mb-6">Security</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-light text-[#000000] mb-2">Current Password</label>
+                                <input type="password" value="**********" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none ">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-light text-[#000000] mb-2">New Password</label>
+                                <input type="password" value="**********" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none ">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-light text-[#000000] mb-2">Confirm New Password</label>
+                                <input type="password" value="**********" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 focus:outline-none ">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-md transition-colors duration-200">
+                                Update Password
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications Section -->
+                    <div class="bg-white rounded-lg shadow-xl border border-gray-200 p-6">
+                        <h2 class="text-2xl font-semibold text-[#1D3557] mb-6">Notifications</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="email-alerts" checked 
+                                    class="w-4 h-4 text-red-500 bg-gray-100 border-gray-300 rounded">
+                                <label for="email-alerts" class="ml-3 text-sm text-gray-600">
+                                    Receive email alerts for donor matches
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="sms-updates" checked 
+                                    class="w-4 h-4 text-red-500 bg-gray-100 border-gray-300 rounded">
+                                <label for="sms-updates" class="ml-3 text-sm text-gray-600">
+                                    Receive SMS updates on requests
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="new-features" 
+                                    class="w-4 h-4 text-red-500 rounded">
+                                <label for="new-features" class="ml-3 text-sm text-gray-600">
+                                    Notify me about new features
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-1/4 h-[220px] mx-4 pt-4 relative">
+            <button id="closeBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <div class="p-8 text-center">
+                <div class="mx-auto mb-6 w-12 h-12 rounded-full flex items-center justify-center">
+                    <img src="./assets/images/streamline_padlock-square-1-solid.svg" alt="">
+                </div>
+
+                <h3 class="text-xl font-semibold text-[#1D3557] mb-3">
+                    Are you sure you want to log out?
+                </h3>
+
+                <p class="text-[#000000] text-sm mb-8">
+                    Logging out will end your current session.
+                </p>
+
+                <a href="signin.html">
+                    <button class="w-[140px] bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-sm transition-colors duration-200">
+                       Yes, Log Out
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dashboardNav = document.getElementById('dashboard-nav');
+            const postRequestNav = document.getElementById('post-request-nav');
+            const matchedDonorsNav = document.getElementById('matched-donors-nav');
+            const postNewRequestBtn = document.getElementById('post-new-request-btn');
+            const dashboardStats = document.getElementById('dashboard-stats');
+            const dashboardContent = document.getElementById('dashboard-content');
+            const postRequestForm = document.getElementById('post-request-form');
+            const matchedDonorsPage = document.getElementById('matched-donors-page');
+            const pageTitle = document.getElementById('page-title');
+            const newBtn =document.getElementById('new-btn');
+            const historyBtn =document.getElementById('history-btn');
+            const requestHistoryPage = document.getElementById('request-history-page');
+            const requestHistoryNav = document.getElementById('request-history-nav');
+            const accountNav = document.getElementById('account-nav');
+            const accountPage =document.getElementById('account-page');
+
+
+            function showDashboard() {
+                pageTitle.textContent = 'Dashboard';
+                postNewRequestBtn.style.display = 'block';
+                dashboardStats.style.display = 'grid';
+                dashboardContent.style.display = 'grid';
+                postRequestForm.classList.add('hidden');
+                matchedDonorsPage.classList.add('hidden');
+                requestHistoryPage.classList.add('hidden');
+                accountPage.classList.add('hidden');
+            
+                document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+                dashboardNav.classList.add('active');
+            }
+
+            function showPostRequestForm() {
+                pageTitle.textContent = '';
+                postNewRequestBtn.style.display = 'none';
+                dashboardStats.style.display = 'none';
+                dashboardContent.style.display = 'none';
+                postRequestForm.classList.remove('hidden');
+                matchedDonorsPage.classList.add('hidden');
+                requestHistoryPage.classList.add('hidden');
+                accountPage.classList.add('hidden');
+            
+                document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+                postRequestNav.classList.add('active');
+            }
+
+            function showMatchedDonors() {
+                pageTitle.textContent = '';
+                postNewRequestBtn.style.display = 'none';
+                dashboardStats.style.display = 'none';
+                dashboardContent.style.display = 'none';
+                postRequestForm.classList.add('hidden');
+                matchedDonorsPage.classList.remove('hidden');
+                requestHistoryPage.classList.add('hidden');
+                accountPage.classList.add('hidden');
+            
+                document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+                matchedDonorsNav.classList.add('active');
+            }
+
+            function showRequestHistory() {
+                pageTitle.textContent = ''; 
+                postNewRequestBtn.style.display = 'none';
+                dashboardStats.style.display = 'none';
+                dashboardContent.style.display = 'none';
+                matchedDonorsPage.classList.add('hidden');
+                postRequestForm.classList.add('hidden');
+                requestHistoryPage.classList.remove('hidden');
+                accountPage.classList.add('hidden');
+                
+                document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+                requestHistoryNav.classList.add('active');
+            }
+
+            function showAccount() {
+                pageTitle.textContent = ''; 
+                postNewRequestBtn.style.display = 'none';
+                dashboardStats.style.display = 'none';
+                dashboardContent.style.display = 'none';
+                matchedDonorsPage.classList.add('hidden');
+                postRequestForm.classList.add('hidden');
+                requestHistoryPage.classList.add('hidden');
+                accountPage.classList.remove('hidden');
+                
+                document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+                accountNav.classList.add('active');
+            }
+
+ 
+            dashboardNav.addEventListener('click', function(e) {
+                e.preventDefault();
+                showDashboard();
+            });
+
+            postRequestNav.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPostRequestForm();
+            });
+
+            requestHistoryNav.addEventListener('click', function(e) {
+                e.preventDefault();
+                showRequestHistory();
+            });
+
+            accountNav.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAccount();
+            });
+
+
+            matchedDonorsNav.addEventListener('click', function(e) {
+                e.preventDefault();
+                showMatchedDonors();
+            });
+
+            postNewRequestBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPostRequestForm();
+            });
+
+            newBtn.addEventListener('click', function (e){
+                e.preventDefault();
+                showPostRequestForm();
+            })
+
+            historyBtn.addEventListener('click', function (e){
+                e.preventDefault();
+                showPostRequestForm();
+            })
+
+            
+
+            // Form submission
+            const submitForm = document.querySelector('#post-request-form form');
+            submitForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Blood request submitted successfully!');
+                showDashboard(); 
+            });
+        });
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('closeBtn');
+
+        logoutBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+
+
+        
+
+    </script>
 </body>
 </html>
